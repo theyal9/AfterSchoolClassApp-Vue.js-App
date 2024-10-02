@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"></link>
+    <link rel="stylesheet" href="CSS/index.css">
+    <script src="https://unpkg.com/vue@2.7.8/dist/vue.js"></script>
+    <title>After School Class App</title>
+</head>
+<body>
+    <div id="classApp">
+        <h1 class="message">{{message}}</h1>
+        <button v-on:click="showCheckout" class="checkoutButton">
+            {{itemInCart}}
+            <span class="fa-solid fa-cart-plus"></span>
+            Checkout</button>
+        <main class="lessonContainer">
+            <div v-if="showLessons">
+                <figure>
+                    <img v-bind:src="lessons.image" alt="Maths Image">
+                </figure>
+                <h2 v-text="lessons.subject"></h2>
+                <p v-text="lessons.location"></p>
+                <p>Price: Rs {{lessons.price}}</p>
+    
+                <button v-if="canAddToCart" v-on:click="addItemToCart">Add to Cart</button>
+                <div v-else>
+                    <button disabled>Add to Cart</button>
+                    Cannot be added...All seats are taken!
+                </div>
+            </div>
+            <div v-else>
+                <h1>Welcome to the Checkout Page</h1>
+            </div>
+        </main>
+    </div>
+<script>
+    let webstore = new Vue({
+        el: '#classApp',
+        data:{
+            message: 'The After School Classes',
+            lessons:{
+                id:1,
+                subject:'Maths',
+                location:'London',
+                price:1500,
+                image:'Assets/images/Maths.jpg',
+                spaces: 5
+            },
+            cart:[],
+            showLessons: true,
+        },
+        methods:{
+            addItemToCart()
+            {
+                this.cart.push(this.lessons.id);
+            },
+            showCheckout()
+            {
+                if (this.showLessons)
+                {
+                    this.showLessons = false;
+                } else {
+                    this.showLessons = true;
+                }
+            }
+        },
+        computed:{
+            itemInCart:function()
+            {
+                return this.cart.length > 0 ? "(" + this.cart.length + ")" : "";
+            },
+            canAddToCart()
+            {
+                return this.lessons.spaces > this.cart.length;
+            }
+        }
+    })
+</script>
+</body>
+</html>
