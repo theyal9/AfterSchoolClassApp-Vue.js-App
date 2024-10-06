@@ -8,8 +8,24 @@ body {
     height: 100vh;
 }
 
-/* Message on the left */
-.message {
+header {
+  display: flex;
+  justify-content: space-between; 
+  align-items: center; 
+  overflow: hidden; 
+  /* width: 100%;  */
+  z-index: 100; 
+  background-color: transparent; 
+  height: 50px; 
+  color: #010101; 
+  font-size: 10px;
+  margin-top: 1.5%;
+  margin-left: 300px;
+  margin-right: 500px;
+}
+
+/* Title on the left */
+/* header .title {
     top: 20px;
     left: 20px;
     font-size: 2rem;
@@ -17,10 +33,10 @@ body {
     color: #333;
     margin: 0;
     margin-top: 50px;
-}
+} */
 
 /* Checkout button on the top-right corner */
-.checkoutButton {
+/* .checkoutButton {
     position: absolute;
     top: 20px;
     right: 20px;
@@ -34,14 +50,246 @@ body {
     box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
     display: flex;
     align-items: center;
+} */
+
+/* .checkoutButton:hover {
+    background-color: #ff4500;
+} */
+
+/* .checkoutButton .fa-cart-plus {
+    margin-left: 5px;
+} */
+
+
+.checkoutButton {
+  background-color: #ffffff;
+  display: flex;
+  width: 170px;
+  height: 60px;
+  border-radius: 10px;
+  transition: 0.3s ease-in-out;
+  position: absolute;
+  right: 20px;
+  margin-top: 15px;
+  font-size: 0.8rem;
+  border: none;
+  cursor: pointer;
+  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+  align-items: center;
+  padding: 0;
+  box-sizing: border-box;
 }
 
 .checkoutButton:hover {
-    background-color: #ff4500;
+  transform: scale(1.03);
 }
 
-.checkoutButton .fa-cart-plus {
-    margin-left: 5px;
+.checkoutButton:hover .left-side {
+  width: 100%;
+}
+
+.left-side {
+  background-color: #5de2a3;
+  width: 130px;
+  height: 120px;
+  border-radius: 12px;
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  transition: 0.3s;
+  flex-shrink: 0;
+  overflow: hidden;
+  left: -33px;
+  padding: 0;
+  margin: 0;
+}
+
+.right-side {
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+  cursor: pointer;
+  justify-content: space-between;
+  white-space: nowrap;
+  transition: 0.3s;
+  margin-left: -55px;
+}
+
+.right-side:hover {
+  background-color: #f9f7f9;
+}
+
+.new {
+  font-size: 20px;
+  font-family: "Lexend Deca", sans-serif;
+  margin-left: 0px;
+}
+
+.card {
+  width: 70px;
+  height: 46px;
+  background-color: #c7ffbc;
+  border-radius: 6px;
+  position: absolute;
+  display: flex;
+  z-index: 10;
+  flex-direction: column;
+  align-items: center;
+  -webkit-box-shadow: 9px 9px 9px -2px rgba(77, 200, 143, 0.72);
+  -moz-box-shadow: 9px 9px 9px -2px rgba(77, 200, 143, 0.72);
+  -webkit-box-shadow: 9px 9px 9px -2px rgba(77, 200, 143, 0.72);
+}
+
+.card-line {
+  width: 65px;
+  height: 13px;
+  background-color: #80ea69;
+  border-radius: 2px;
+  margin-top: 7px;
+}
+
+.checkoutButton:hover .card {
+  animation: slide-top 1.2s cubic-bezier(0.645, 0.045, 0.355, 1) both;
+}
+
+.checkoutButton:hover .post {
+  animation: slide-post 1s cubic-bezier(0.165, 0.84, 0.44, 1) both;
+}
+
+@keyframes slide-top {
+  0% {
+    -webkit-transform: translateY(0);
+    transform: translateY(0);
+  }
+
+  50% {
+    -webkit-transform: translateY(-70px) rotate(90deg);
+    transform: translateY(-70px) rotate(90deg);
+  }
+
+  60% {
+    -webkit-transform: translateY(-70px) rotate(90deg);
+    transform: translateY(-70px) rotate(90deg);
+  }
+
+  100% {
+    -webkit-transform: translateY(-8px) rotate(90deg);
+    transform: translateY(-8px) rotate(90deg);
+  }
+}
+
+.left-side {
+  transform: scale(0.5);
+}
+
+.checkoutButton {
+  transform: scale(0.8);
+}
+
+.post {
+  width: 63px;
+  height: 75px;
+  background-color: #dddde0;
+  position: absolute;
+  z-index: 11;
+  bottom: 10px;
+  top: 120px;
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.post-line {
+  width: 47px;
+  height: 9px;
+  background-color: #545354;
+  position: absolute;
+  border-radius: 0px 0px 3px 3px;
+  right: 8px;
+  top: 8px;
+}
+
+.post-line:before {
+  content: "";
+  position: absolute;
+  width: 47px;
+  height: 9px;
+  background-color: #757375;
+  top: -8px;
+}
+
+.screen {
+  width: 47px;
+  height: 23px;
+  background-color: #ffffff;
+  position: absolute;
+  top: 22px;
+  right: 8px;
+  border-radius: 3px;
+}
+
+.numbers {
+  width: 12px;
+  height: 12px;
+  background-color: #838183;
+  box-shadow: 0 -18px 0 0 #838183, 0 18px 0 0 #838183;
+  border-radius: 2px;
+  position: absolute;
+  transform: rotate(90deg);
+  left: 25px;
+  top: 52px;
+}
+
+.numbers-line2 {
+  width: 12px;
+  height: 12px;
+  background-color: #aaa9ab;
+  box-shadow: 0 -18px 0 0 #aaa9ab, 0 18px 0 0 #aaa9ab;
+  border-radius: 2px;
+  position: absolute;
+  transform: rotate(90deg);
+  left: 25px;
+  top: 68px;
+}
+
+@keyframes slide-post {
+  50% {
+    -webkit-transform: translateY(0);
+    transform: translateY(0);
+  }
+
+  100% {
+    -webkit-transform: translateY(-70px);
+    transform: translateY(-70px);
+  }
+}
+
+.dollar {
+  position: absolute;
+  font-size: 16px;
+  font-family: "Lexend Deca", sans-serif;
+  width: 100%;
+  left: 0;
+  top: 0;
+  color: #4b953b;
+  text-align: center;
+}
+
+.checkoutButton:hover .dollar {
+  animation: fade-in-fwd 0.3s 1s backwards;
+}
+
+@keyframes fade-in-fwd {
+  0% {
+    opacity: 0;
+    transform: translateY(-5px);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 /* Torn paper background for the lesson container */

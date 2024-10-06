@@ -10,11 +10,43 @@
 </head>
 <body>
     <div id="classApp">
-        <h1 class="message">{{message}}</h1>
-        <button v-on:click="showCheckout" class="checkoutButton">
-            {{itemInCart}}
-            <span class="fa-solid fa-cart-plus"></span>
-            Checkout</button>
+        <header>
+            <h1 class="title">{{title}}</h1>
+            <h1 class="home">Home</h1>
+            <h1 class="howToBuy">How To Buy</h1>
+            <h1 class="login">Login/Register</h1>
+        
+            <button v-on:click="showCheckout" class="checkoutButton">
+                {{itemInCart}}
+                <!-- <span class="fa-solid fa-cart-plus"></span> -->
+                <!-- Checkout -->
+                <div class="left-side">
+                    <div class="card">
+                      <div class="card-line"></div>
+                      <div class="buttons"></div>
+                    </div>
+                    <div class="post">
+                      <div class="post-line"></div>
+                      <div class="screen">
+                        <div class="dollar">$</div>
+                      </div>
+                      <div class="numbers"></div>
+                      <div class="numbers-line2"></div>
+                    </div>
+                </div>
+                <div class="right-side">
+                    <div class="new">Checkout</div>
+                </div>
+            </button>
+        
+        
+        
+        
+        
+        </header>
+        
+
+
         <main class="lessonContainer">
             <div v-if="showLessons">
                 <figure>
@@ -27,7 +59,7 @@
                 <button v-if="canAddToCart" v-on:click="addItemToCart">Add to Cart</button>
                 <div v-else>
                     <button disabled>Add to Cart</button>
-                    Cannot be added...All seats are taken!
+                    Lesson no longer available...All seats are taken!
                 </div>
             </div>
             <div v-else>
@@ -39,7 +71,7 @@
     let webstore = new Vue({
         el: '#classApp',
         data:{
-            message: 'The After School Classes',
+            title: 'The After School Classes',
             lessons:{
                 id:1,
                 subject:'Maths',
