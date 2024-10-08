@@ -5,7 +5,6 @@ body {
     margin: 0;
     padding: 0;
     position: relative;
-    height: 100vh;
 }
 
 header {
@@ -13,58 +12,32 @@ header {
   justify-content: space-between; 
   align-items: center; 
   overflow: hidden; 
-  /* width: 100%;  */
   z-index: 100; 
   background-color: transparent; 
   height: 50px; 
   color: #010101; 
-  font-size: 10px;
-  margin-top: 1.5%;
-  margin-left: 300px;
-  margin-right: 500px;
+  font-size: 15px;
+  margin-top: 1.8%;
+  margin-left: 200px;
+  margin-right: 400px;
+  font-family: 'Nanum Pen Script', cursive;
 }
 
 /* Title on the left */
-/* header .title {
-    top: 20px;
-    left: 20px;
-    font-size: 2rem;
-    font-weight: bold;
-    color: #333;
-    margin: 0;
-    margin-top: 50px;
-} */
+.title {
+  font-size: 25px;
+  font-family: 'Dancing Script', cursive;
+}
+
+header .title {
+  margin: 0;
+}
 
 /* Checkout button on the top-right corner */
-/* .checkoutButton {
-    position: absolute;
-    top: 20px;
-    right: 20px;
-    background-color: #ff6347;
-    color: white;
-    padding: 10px 20px;
-    font-size: 1rem;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
-    display: flex;
-    align-items: center;
-} */
-
-/* .checkoutButton:hover {
-    background-color: #ff4500;
-} */
-
-/* .checkoutButton .fa-cart-plus {
-    margin-left: 5px;
-} */
-
-
 .checkoutButton {
   background-color: #ffffff;
   display: flex;
-  width: 170px;
+  width: 200px;
   height: 60px;
   border-radius: 10px;
   transition: 0.3s ease-in-out;
@@ -78,6 +51,7 @@ header {
   align-items: center;
   padding: 0;
   box-sizing: border-box;
+  font-size: 20px;
 }
 
 .checkoutButton:hover {
@@ -114,17 +88,25 @@ header {
   justify-content: space-between;
   white-space: nowrap;
   transition: 0.3s;
-  margin-left: -55px;
+  margin-left: -58px;
 }
 
-.right-side:hover {
+.checkoutButton:hover .right-side {
   background-color: #f9f7f9;
+
+  left: -50px;
 }
 
 .new {
   font-size: 20px;
   font-family: "Lexend Deca", sans-serif;
   margin-left: 0px;
+}
+
+.backButton {
+  font-size: 20px;
+  font-family: "Lexend Deca", sans-serif;
+  margin-left: 17px;
 }
 
 .card {
@@ -280,6 +262,11 @@ header {
   animation: fade-in-fwd 0.3s 1s backwards;
 }
 
+.checkoutButton:hover .new {
+  animation: fade-in-fwd 0.3s 1s backwards;
+  font-size: 10px;
+}
+
 @keyframes fade-in-fwd {
   0% {
     opacity: 0;
@@ -297,6 +284,14 @@ header {
     margin-top: 50px;
     margin-left: 20px;
     padding: 20px;
+    z-index: 1;
+    text-align: center;
+}
+
+.displayLessons {
+    margin-top: 50px;
+    margin-left: 20px;
+    padding: 20px;
     max-width: 200px;
     background: white;
     border: 2px solid #ccc;
@@ -309,7 +304,7 @@ header {
 }
 
 /* Torn paper effect for the lesson container */
-.lessonContainer::before {
+.displayLessons::before {
     content: '';
     position: absolute;
     top: -10px;
@@ -325,7 +320,7 @@ header {
 }
 
 /* Image inside lesson container */
-.lessonContainer figure img {
+.displayLessons figure img {
     width: 100px;
     height: 100px;
     border-radius: 10px;
@@ -333,7 +328,7 @@ header {
 }
 
 /* Buttons inside lesson container */
-.lessonContainer button {
+.displayLessons button {
     background-color: #333;
     color: #fff;
     border: none;
@@ -344,6 +339,52 @@ header {
     transition: background-color 0.3s ease;
 }
 
-.lessonContainer button:hover {
+.displayLessons button:hover {
     background-color: #555;
+}
+
+/* Style for the container holding each label and input field */
+.input-group {
+  display: flex;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+/* Label styling to add space on the right */
+.input-group strong {
+  min-width: 100px; 
+  margin-right: 10px;
+  font-family: 'Dancing Script', cursive;
+  color: #555;
+  font-size: 18px;
+}
+
+/* Input styling */
+.input-group input {
+  flex: 1;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-family: 'Lexend Deca', sans-serif;
+  font-size: 16px;
+}
+
+/* Other existing styles */
+.checkoutContainer {
+  padding: 20px;
+  width: 600px;
+}
+
+.checkoutContainer h1, 
+.checkoutContainer h2 {
+  text-align: center;
+  color: #333;
+  font-family: 'Lexend Deca', sans-serif;
+}
+
+.checkoutContainer .order-info {
+  font-family: 'Nanum Pen Script', cursive;
+  font-size: 20px;
+  margin-top: 20px;
+  color: #666;
 }
