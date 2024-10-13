@@ -44,41 +44,41 @@
         </header>
 
         <main class="lessonContainer">
-            <div v-if="showLessons">
+            <div v-if="showLessons" class="showLessons">
 
                 <div class="input-group">
                     <strong>Sort By:</strong>
-                    <select v-model="order.sortBy">
+                    <select v-model="selectedSort">
                         <option disabled value="">sortBy</option>
-                        <option v-for="(state, key) in sortBy"
-                        v-bind:value="state">
-                        {{key}}
+                        <option v-for="(state, key) in sortBy" v-bind:value="state">
+                            {{key}}
                         </option>
                     </select>
                 </div>
 
+                <div  class="lessons">
+                    <div v-for="lesson in sortedLessons" :key="lesson.id" class="displayLessons">
+                        <figure>
+                            <img v-bind:src="lesson.image" :alt="lesson.subject + ' Image'">
+                        </figure>
+                        <h2 v-text="lesson.subject"></h2>
+                        <p v-text="lesson.location"></p>
+                        <p>Price: Rs {{lesson.price}}</p>
 
-                <div v-for="lesson in lessons" :key="lesson.id" class="displayLessons">
-                    <figure>
-                        <img v-bind:src="lesson.image" :alt="lesson.subject + ' Image'">
-                    </figure>
-                    <h2 v-text="lesson.subject"></h2>
-                    <p v-text="lesson.location"></p>
-                    <p>Price: Rs {{lesson.price}}</p>
-
-                    <button v-if="canAddToCart(lesson)" v-on:click="addItemToCart(lesson)">Add to Cart</button>
-                    <span v-if='lesson.spaces === cartCount(lesson.id)'>All seats are taken!</span>
-                    <span v-else-if="lesson.spaces - cartCount(lesson.id) < 5">
-                        Only {{lesson.spaces - cartCount(lesson.id)}} left!
-                    </span>
-                    <span v-else>Buy now!</span>
-                    
-                    <div v-else>
-                        <button disabled>Add to Cart</button>
-                    </div>
-                    <div>
-                        <span v-for='n in lesson.rating'>★</span>
-                        <span v-for='n in 5 - lesson.rating'>☆</span>
+                        <button v-if="canAddToCart(lesson)" v-on:click="addItemToCart(lesson)">Add to Cart</button>
+                        <span v-if='lesson.spaces === cartCount(lesson.id)'>All seats are taken!</span>
+                        <span v-else-if="lesson.spaces - cartCount(lesson.id) < 5">
+                            Only {{lesson.spaces - cartCount(lesson.id)}} left!
+                        </span>
+                        <span v-else>Buy now!</span>
+                        
+                        <div v-else>
+                            <button disabled>Add to Cart</button>
+                        </div>
+                        <div>
+                            <span v-for='n in lesson.rating'>★</span>
+                            <span v-for='n in 5 - lesson.rating'>☆</span>
+                        </div>
                     </div>
                 </div>  
             </div>
@@ -156,6 +156,7 @@
             lessons: lessons,
             cart:[],
             showLessons: true,
+            selectedSort: '',
             order: {
                 firstName: '',
                 lastName: '',
@@ -174,10 +175,12 @@
                 NV: 'Nevada'
             },
             sortBy: {
-                Subject: 'Arizona',
-                Location: 'California',
-                Price: 'Alabam',
-                Spaces: 'Nevada'
+                Subject: 'subject',
+                Location: 'location',
+                // Price: 'price',
+                LowestPrice: 'lowest price',
+                HighestPrice: 'highest price',
+                Spaces: 'spaces'
             }
         },
         methods:{
@@ -223,15 +226,29 @@
             itemsLeft() {
                 return this.lessons.spaces - this.cart.length;
             },
+            // sortedLessons() {
+            //     // the comparison function that defines the order
+            //     function compare(a, b) {
+            //         if (a.price > b.price) return 1;
+            //         if (a.price < b.price) return -1;
+            //         return 0;
+            //     }
+            //     // sort the 'lessons' array and return it
+            //     return this.lessons.sort(compare);
+            // }
             sortedLessons() {
-                // the comparison function that defines the order
-                function compare(a, b) {
-                    if (a.price > b.price) return 1;
-                    if (a.price < b.price) return -1;
-                    return 0;
+                if (this.selectedSort === 'lowest price') {
+                    return this.lessons.sort((a, b) => a.price - b.price);
+                } else if (this.selectedSort === 'highest price') {
+                    return this.lessons.sort((a, b) => b.price - a.price);
+                } else if (this.selectedSort === 'subject') {
+                    return this.lessons.sort((a, b) => a.subject.localeCompare(b.subject));
+                } else if (this.selectedSort === 'location') {
+                    return this.lessons.sort((a, b) => a.location.localeCompare(b.location));
+                } else if (this.selectedSort === 'spaces') {
+                    return this.lessons.sort((a, b) => b.spaces - a.spaces);
                 }
-                // sort the 'lessons' array and return it
-                return this.lessons.sort(compare);
+                return this.lessons; // Default case, if no sort option is selected
             }
         }
     })

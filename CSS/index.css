@@ -1,6 +1,6 @@
 /* General body styles */
 body {
-    background-color: #f9f9f9;
+    background-color: #d1abf1;
     font-family: Arial, sans-serif;
     margin: 0;
     padding: 0;
@@ -279,6 +279,17 @@ header .title {
   }
 }
 
+.lessons {
+  display: flex;
+  flex-wrap: wrap; 
+  gap: 20px; 
+  justify-content: space-between; 
+  align-items: center; 
+  margin-top: 1.8%;
+  margin-left: 30px;
+  margin-right: 50px;
+}
+
 /* Torn paper background for the lesson container */
 .lessonContainer {
     margin-top: 50px;
@@ -293,6 +304,7 @@ header .title {
     margin-left: 20px;
     padding: 20px;
     max-width: 200px;
+    max-height: 500px;
     background: white;
     border: 2px solid #ccc;
     border-radius: 15px;
@@ -329,7 +341,7 @@ header .title {
 
 /* Buttons inside lesson container */
 .displayLessons button {
-    background-color: #333;
+    background-color: #6628f7;
     color: #fff;
     border: none;
     padding: 10px 15px;

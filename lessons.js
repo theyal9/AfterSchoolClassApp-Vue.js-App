@@ -94,7 +94,7 @@ let lessons = [
         subject: 'Physical Education',
         location: 'Newcastle',
         price: 1000,
-        image: 'Assets/images/PE.jpg',
+        image: 'Assets/images/Physical Education.jpg',
         spaces: 5,
         rating: 3
     },
@@ -103,7 +103,7 @@ let lessons = [
         subject: 'Computer Science',
         location: 'Sheffield',
         price: 1700,
-        image: 'Assets/images/CS.jpg',
+        image: 'Assets/images/Computer Science.jpg',
         spaces: 5,
         rating: 4
     },
@@ -145,6 +145,15 @@ let lessons = [
     },
     {
         id: 17,
+        subject: 'Korean',
+        location: 'Sheffield',
+        price: 2700,
+        image: 'Assets/images/Korean.jpg',
+        spaces: 5,
+        rating: 5
+    },
+    {
+        id: 18,
         subject: 'French',
         location: 'London',
         price: 1350,
@@ -153,22 +162,13 @@ let lessons = [
         rating: 4
     },
     {
-        id: 18,
+        id: 19,
         subject: 'Spanish',
         location: 'Bristol',
         price: 1250,
         image: 'Assets/images/Spanish.jpg',
         spaces: 5,
         rating: 5
-    },
-    {
-        id: 19,
-        subject: 'German',
-        location: 'Liverpool',
-        price: 1150,
-        image: 'Assets/images/German.jpg',
-        spaces: 5,
-        rating: 3
     },
     {
         id: 20,
