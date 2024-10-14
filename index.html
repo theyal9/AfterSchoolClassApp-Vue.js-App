@@ -14,9 +14,9 @@
     <div id="classApp">
         <header>
             <h1 class="title">{{title}}</h1>
-            <h1 class="home">Home</h1>
-            <h1 class="howToBuy">How To Buy</h1>
-            <h1 class="login">Login/Register</h1>
+            <h1>Home</h1>
+            <h1>How To Buy</h1>
+            <h1>Login/Register</h1>
         
             <button v-if="showLessons" v-on:click="showCheckout" class="checkoutButton">
                 <!-- Checkout -->
@@ -83,56 +83,88 @@
                 </div>  
             </div>
             <div v-else class="checkoutContainer">
-                <h1>Welcome to the Checkout Page</h1>
+                <h1>Checkout Page > Select Items in Cart > Enter your details > Verify Amount > Checkout</h1>
                 
-                <div class="input-group">
-                    <strong>First Name:</strong>
-                    <input v-model.trim="order.firstName"/>
-                </div>
-            
-                <div class="input-group">
-                    <strong>Last Name:</strong>
-                    <input v-model.trim="order.lastName"/>
-                </div>
-            
-                <div class="input-group">
-                    <strong>Address:</strong>
-                    <input v-model.trim="order.address"/>
-                </div>
-            
-                <div class="input-group">
-                    <strong>City:</strong>
-                    <input v-model.trim="order.city"/>
-                </div>
-                      
-                <div class="input-group">
-                    <strong>State:</strong>
-                    <select v-model="order.state">
-                        <option disabled value="">State</option>
-                        <option v-for="(state, key) in states"
-                        v-bind:value="state">
-                        {{key}}
-                        </option>
-                    </select>
+                <div class="items-in-cart">
+                    <!-- Fetch lesson details from backend and display -->
+                    <!-- <div  class="lessons">
+                        <div v-for="lesson in cart" :key="lesson.id" class="displayLessons">
+                            <figure>
+                                <img v-bind:src="lesson.image" :alt="lesson.subject + ' Image'">
+                            </figure>
+                            <h2 v-text="lesson.subject"></h2>
+                            <p v-text="lesson.location"></p>
+                            <p>Price: Rs {{lesson.price}}</p>
+    
+                            <button v-if="canAddToCart(lesson)" v-on:click="addItemToCart(lesson)">Add to Cart</button>
+                            <span v-if='lesson.spaces === cartCount(lesson.id)'>All seats are taken!</span>
+                            <span v-else-if="lesson.spaces - cartCount(lesson.id) < 5">
+                                Only {{lesson.spaces - cartCount(lesson.id)}} left!
+                            </span>
+                            <span v-else>Buy now!</span>
+                            
+                            <div v-else>
+                                <button disabled>Add to Cart</button>
+                            </div>
+                            <div>
+                                <span v-for='n in lesson.rating'>★</span>
+                                <span v-for='n in 5 - lesson.rating'>☆</span>
+                            </div>
+                        </div>
+                    </div>  -->
                 </div>
 
-                <div class="input-group">
-                    <strong>Zip:</strong>
-                    <input v-model.number="order.zip" type="number"/>
+                <div class="checkout-details">
+                    <div class="input-group">
+                        <strong>First Name:</strong>
+                        <input v-model.trim="order.firstName"/>
+                    </div>
+                
+                    <div class="input-group">
+                        <strong>Last Name:</strong>
+                        <input v-model.trim="order.lastName"/>
+                    </div>
+                
+                    <div class="input-group">
+                        <strong>Address:</strong>
+                        <input v-model.trim="order.address"/>
+                    </div>
+                
+                    <div class="input-group">
+                        <strong>City:</strong>
+                        <input v-model.trim="order.city"/>
+                    </div>
+                          
+                    <div class="input-group">
+                        <strong>State:</strong>
+                        <select v-model="order.state">
+                            <option disabled value="">State</option>
+                            <option v-for="(state, key) in states"
+                            v-bind:value="state">
+                            {{key}}
+                            </option>
+                        </select>
+                    </div>
+    
+                    <div class="input-group">
+                        <strong>Zip:</strong>
+                        <input v-model.number="order.zip" type="number"/>
+                    </div>
+    
+                    <p><input type="checkbox" id="gift" value="true"
+                        v-model="order.gift"
+                        v-bind:true-value="order.sendGift"
+                        v-bind:false-value="order.dontSendGift">
+                        <label for="gift">Ship As Gift?</label>
+                    </p>
+
+                    <p><input type="radio" id="home" value="Home" v-model="order.method">
+                        <label for="home">Home</label>
+                        <input type="radio" id="business" value="Business" v-model="order.method">
+                        <label for="business">Business</label>
+                    </p>
                 </div>
-
-                <p><input type="checkbox" id="gift" value="true"
-                    v-model="order.gift"
-                    v-bind:true-value="order.sendGift"
-                    v-bind:false-value="order.dontSendGift">
-                    <label for="gift">Ship As Gift?</label>
-                </p>
-
-                <p><input type="radio" id="home" value="Home" v-model="order.method">
-                <label for="home">Home</label>
-                <input type="radio" id="business" value="Business" v-model="order.method">
-                <label for="business">Business</label></p>
-            
+                           
                 <h2>Order Information</h2>
                 <p class="order-info">First Name: {{order.firstName}}</p>
                 <p class="order-info">Last Name: {{order.lastName}}</p>
@@ -216,6 +248,10 @@
             canAddToCart(lesson)
             {
                 return lesson.spaces > this.cartCount(lesson.id);
+            },
+            availableSpace(lesson)
+            {
+                return lesson.spaces - this.cartCount(lesson.id);
             }
         },
         computed:{
@@ -223,9 +259,10 @@
             {
                 return this.cart.length > 0 ? "(" + this.cart.length + ")" : "";
             },
-            itemsLeft() {
-                return this.lessons.spaces - this.cart.length;
-            },
+            // itemsLeft() {
+            //     return this.lessons.spaces - this.cart.length;
+            // },
+
             // sortedLessons() {
             //     // the comparison function that defines the order
             //     function compare(a, b) {
@@ -236,6 +273,14 @@
             //     // sort the 'lessons' array and return it
             //     return this.lessons.sort(compare);
             // }
+            availableSpaces() {
+                // Return an object where the keys are lesson ids and the values are available spaces
+                let spaces = {};
+                this.lessons.forEach(lesson => {
+                    spaces[lesson.id] = lesson.spaces - this.cartCount(lesson.id);
+                });
+                return spaces;
+            },
             sortedLessons() {
                 if (this.selectedSort === 'lowest price') {
                     return this.lessons.sort((a, b) => a.price - b.price);
@@ -246,7 +291,8 @@
                 } else if (this.selectedSort === 'location') {
                     return this.lessons.sort((a, b) => a.location.localeCompare(b.location));
                 } else if (this.selectedSort === 'spaces') {
-                    return this.lessons.sort((a, b) => b.spaces - a.spaces);
+                    // return this.lessons.sort((a, b) => b.spaces - a.spaces);
+                    return this.lessons.sort((a, b) => this.availableSpaces[b.id] - this.availableSpaces[a.id]);
                 }
                 return this.lessons; // Default case, if no sort option is selected
             }

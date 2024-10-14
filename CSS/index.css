@@ -7,6 +7,10 @@ body {
     position: relative;
 }
 
+body::-webkit-scrollbar { 
+  display: none; 
+}
+
 header {
   display: flex;
   justify-content: space-between; 
@@ -384,7 +388,6 @@ header .title {
 /* Other existing styles */
 .checkoutContainer {
   padding: 20px;
-  width: 600px;
 }
 
 .checkoutContainer h1, 
@@ -392,6 +395,17 @@ header .title {
   text-align: center;
   color: #333;
   font-family: 'Lexend Deca', sans-serif;
+  font-size: 20px;
+}
+
+.checkoutContainer h1 {
+  /* margin-top: -30px; */
+  margin-bottom: 40px;
+}
+
+.checkout-details {
+  width: 600px;
+  padding: 20px;
 }
 
 .checkoutContainer .order-info {
