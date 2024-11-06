@@ -139,6 +139,11 @@
                         <strong>Address:</strong>
                         <input v-model.trim="order.address"/>
                     </div>
+
+                    <div class="inputGroup">
+                        <strong>Phone Number:</strong>
+                        <input v-model.trim="order.phoneNumber"/>
+                    </div>
                 
                     <div class="inputGroup">
                         <strong>City:</strong>
@@ -179,6 +184,7 @@
                 <p class="order-info">First Name: {{order.firstName}}</p>
                 <p class="order-info">Last Name: {{order.lastName}}</p>
                 <p class="order-info">Address: {{order.address}}</p>
+                <p class="order-info">Phone Number: {{order.phoneNumber}}</p>
                 <p class="order-info">City: {{order.city}}</p>
                 <p class="order-info">Zip: {{order.zip}}</p>
                 <p class="order-info">State: {{order.state}}</p>
@@ -190,131 +196,6 @@
             </div>            
         </main>
     </div>
-<script>
-    let webstore = new Vue({
-        el: '#classApp',
-        data:{
-            title: 'After School Adventures',
-            lessons: lessons,
-            cart:[],
-            showLessons: true,
-            selectedSort: '',
-            sortOrder: 'asc',
-            order: {
-                firstName: '',
-                lastName: '',
-                address: '',
-                city: '',
-                zip: '',
-                state: '',
-                method: 'Home',
-                sendGift: 'Send as a gift',
-                dontSendGift: 'Do not send as a gift'
-            },
-            states: {
-                AL: 'Alabam',
-                AR: 'Arizona',
-                CA: 'California',
-                NV: 'Nevada'
-            },
-            sortBy: {
-                Subject: 'subject',
-                Location: 'location',
-                Price: 'price',
-                Spaces: 'spaces'
-            }
-        },
-        methods:{
-            addItemToCart(lesson)
-            {
-                this.cart.push(lesson.id);
-            },
-            showCheckout()
-            {
-                if (this.showLessons)
-                {
-                    this.showLessons = false;
-                } else {
-                    this.showLessons = true;
-                }
-            },
-            submitForm() 
-            {
-                alert('Order submitted!')
-            },
-            cartCount(id)
-            {
-                let count = 0;
-                for (let i = 0; i < this.cart.length; i++) 
-                {
-                    if (this.cart[i] === id)
-                    {
-                        count++;
-                    }
-                }
-                return count;
-            },
-            canAddToCart(lesson)
-            {
-                return lesson.spaces > this.cartCount(lesson.id);
-            },
-            availableSpace(lesson)
-            {
-                return lesson.spaces - this.cartCount(lesson.id);
-            }
-        },
-        computed:{
-            itemInCart:function()
-            {
-                return this.cart.length > 0 ? "(" + this.cart.length + ")" : "";
-            },
-            availableSpaces() {
-                // Return an object where the keys are lesson ids and the values are available spaces
-                let spaces = {};
-                this.lessons.forEach(lesson => {
-                    spaces[lesson.id] = lesson.spaces - this.cartCount(lesson.id);
-                });
-                return spaces;
-            },
-
-            sortedLessons() {
-                let sortedLessons = [...this.lessons];  // Clone the lessons array to avoid mutating the original
-
-                if (this.selectedSort === 'price') {
-                    sortedLessons = sortedLessons.sort((a, b) => a.price - b.price);
-                } else if (this.selectedSort === 'subject') {
-                    sortedLessons = sortedLessons.sort((a, b) => a.subject.localeCompare(b.subject));
-                } else if (this.selectedSort === 'location') {
-                    sortedLessons = sortedLessons.sort((a, b) => a.location.localeCompare(b.location));
-                } else if (this.selectedSort === 'spaces') {
-                    sortedLessons = sortedLessons.sort((a, b) => this.availableSpaces[a.id] - this.availableSpaces[b.id]);
-                }
-
-                // Sort in ascending or descending order based on the radio button
-                if (this.sortOrder === 'desc') {
-                    sortedLessons.reverse();
-                }
-
-                return sortedLessons;
-            }
-
-            // sortedLessons() {
-            //     if (this.selectedSort === 'lowest price') {
-            //         return this.lessons.sort((a, b) => a.price - b.price);
-            //     } else if (this.selectedSort === 'highest price') {
-            //         return this.lessons.sort((a, b) => b.price - a.price);
-            //     } else if (this.selectedSort === 'subject') {
-            //         return this.lessons.sort((a, b) => a.subject.localeCompare(b.subject));
-            //     } else if (this.selectedSort === 'location') {
-            //         return this.lessons.sort((a, b) => a.location.localeCompare(b.location));
-            //     } else if (this.selectedSort === 'spaces') {
-            //         // return this.lessons.sort((a, b) => b.spaces - a.spaces);
-            //         return this.lessons.sort((a, b) => this.availableSpaces[b.id] - this.availableSpaces[a.id]);
-            //     }
-            //     return this.lessons; // Default case, if no sort option is selected
-            // }
-        }
-    })
-</script> 
+<script src="js/app.js"></script>
 </body>
 </html>
