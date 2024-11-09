@@ -3,7 +3,6 @@ let webstore = new Vue({
     data:{
         title: 'After School Adventures',
         lessons: [],
-        cart:[],
         showLessons: true,
         selectedSort: '',
         sortOrder: 'asc',
@@ -48,11 +47,12 @@ let webstore = new Vue({
             try {
                 const order = {
                     lessonID: lesson.id,
-                    dateAdded: new Date()
+                    quantity: 1
+                    // dateAdded: new Date()
                 };
       
                 // Send POST request to backend API
-                const response = await fetch('http://localhost:3000/order', {
+                const response = await fetch('http://localhost:3000/addOrder', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -63,6 +63,30 @@ let webstore = new Vue({
                 if (response.ok) {
                     const result = await response.json();
                     console.log('Order added successfully:', result);
+                    // PUT request to update spaces if order was successful
+                    try {
+                        const spaceChange = -1;
+
+                        const updateResponse = await fetch(`http://localhost:3000/lesson/${lesson.id}`, {
+                            method: 'PUT',
+                            headers: {
+                                'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify({
+                                spaces: spaceChange
+                            }),
+                        });
+
+                        if (updateResponse.ok) {
+                            const updatedLesson = await updateResponse.json();
+                            console.log('Lesson spaces updated successfully:', updatedLesson);
+                            this.fetchLessons();
+                        } else {
+                            console.error('Error updating lesson spaces:', updateResponse.statusText);
+                        }
+                    } catch (error) {
+                        console.error('Error in updating spaces:', error);
+                    } 
                 } else {
                     console.error('Error adding order:', response.statusText);
                 }
@@ -83,40 +107,79 @@ let webstore = new Vue({
         {
             alert('Order submitted!')
         },
-        cartCount(id)
+        async cartCount(id)
         {
-            let count = 0;
-            for (let i = 0; i < this.cart.length; i++) 
-            {
-                if (this.cart[i] === id)
-                {
-                    count++;
+            try {
+                // Use query parameters to send the id
+                const response = await fetch(`http://localhost:3000/order/count?id=${id}`);
+                
+                // Ensure response is valid
+                if (!response.ok) {
+                    throw new Error('Failed to fetch data');
                 }
+        
+                // Parse the JSON response
+                const data = await response.json();
+        
+                // Check if data is valid and has the 'count' property
+                if (data && typeof data.count !== 'undefined') {
+                    // Ensure the count is an integer
+                    const count = parseInt(data.count, 10);
+        
+                    // Return the integer count or 0 if it's NaN
+                    return Number.isNaN(count) ? 0 : count;
+                } else {
+                    return 0;
+                }
+            } catch (error) {
+                console.error("Error fetching order count:", error);
+                return 0;  // Return 0 if there's an error or invalid response
             }
-            return count;
+
+            // let count = 0;
+            // for (let i = 0; i < this.cart.length; i++) 
+            // {
+            //     if (this.cart[i] === id)
+            //     {
+            //         count++;
+            //     }
+            // }
+            // return count;
         },
-        canAddToCart(lesson)
-        {
-            return lesson.spaces > this.cartCount(lesson.id);
+        async canAddToCart(lesson)
+        {   
+            console.log(lesson.spaces);
+            const count = await this.cartCount(lesson.id);  // Ensure you await the result here
+            console.log(count); 
+            // console.log(this.cartCount(lesson.id));
+            console.log(lesson.spaces > count);
+            return lesson.spaces > count;
         },
-        availableSpace(lesson)
-        {
-            return lesson.spaces - this.cartCount(lesson.id);
-        }
+        // availableSpace(lesson)
+        // {
+        //     return lesson.spaces - this.cartCount(lesson.id);
+        // }
     },
     computed:{
-        itemInCart:function()
+        // itemInCart:function()
+        // {
+        //     // return this.cart.length > 0 ? "(" + this.cart.length + ")" : "";
+        //     return this.cartCount();
+        // },
+        itemInCart()
         {
-            return this.cart.length > 0 ? "(" + this.cart.length + ")" : "";
+            const count = this.cartCount;
+            console.log(count); 
+            return count > 0 ? "(" + count + ")" : "";
         },
-        availableSpaces() {
-            // Return an object where the keys are lesson ids and the values are available spaces
-            let spaces = {};
-            this.lessons.forEach(lesson => {
-                spaces[lesson.id] = lesson.spaces - this.cartCount(lesson.id);
-            });
-            return spaces;
-        },
+        // availableSpaces() {
+        //     // Return an object where the keys are lesson ids and the values are available spaces
+        //     let spaces = {};
+        //     this.lessons.forEach(lesson => {
+        //         spaces[lesson.id] = lesson.spaces - this.cartCount(lesson.id);
+        //     });
+        //     return spaces;
+        // },
         // sortedLessons() {
         //     let sortedLessons = [...this.lessons];  // Clone the lessons array to avoid mutating the original
 

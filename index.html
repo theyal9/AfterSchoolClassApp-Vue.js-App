@@ -82,9 +82,9 @@
                             Add to Cart
                         </button>
 
-                        <span v-if="lesson.spaces === cartCount(lesson.id)">All seats are taken!</span>
-                        <span v-else-if="lesson.spaces - cartCount(lesson.id) < 5">
-                            Only {{ lesson.spaces - cartCount(lesson.id) }} left!
+                        <span v-if="lesson.spaces == 0">All seats are taken!</span>
+                        <span v-else-if="lesson.spaces < 5">
+                            Only {{lesson.spaces}} left!
                         </span>
                         <span v-else>Buy now!</span>
 
