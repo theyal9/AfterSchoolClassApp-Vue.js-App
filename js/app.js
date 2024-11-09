@@ -34,15 +34,41 @@ let webstore = new Vue({
     methods:{
         async fetchLessons() {
             try {
-                const response = await fetch(`http://localhost:3000/collections/lesson`);
+                const response = await fetch(`http://localhost:3000/lesson`);
                 this.lessons = await response.json();
             } catch (error) {
                 console.error("Error fetching lessons:", error);
             }
         },
-        addItemToCart(lesson)
-        {
-            this.cart.push(lesson.id);
+        // addItemToCart(lesson)
+        // {
+        //     this.cart.push(lesson.id);
+        // },
+        async addItemToCart(lesson) {
+            try {
+                const order = {
+                    lessonID: lesson.id,
+                    dateAdded: new Date()
+                };
+      
+                // Send POST request to backend API
+                const response = await fetch('http://localhost:3000/order', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(order),
+                });
+      
+                if (response.ok) {
+                    const result = await response.json();
+                    console.log('Order added successfully:', result);
+                } else {
+                    console.error('Error adding order:', response.statusText);
+                }
+            } catch (error) {
+                console.error('Error in addToCart:', error);
+            }
         },
         showCheckout()
         {
