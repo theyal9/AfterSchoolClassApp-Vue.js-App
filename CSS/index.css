@@ -374,6 +374,11 @@ header .title {
     background-color: #555;
 }
 
+.displayLessons button.disabledButton {
+  background-color: rgb(193, 24, 24); /* Red button when no space is available */
+  cursor: not-allowed;   /* Change cursor to indicate it's disabled */
+}
+
 /* Style for the container holding each label and input field */
 .inputGroup, .inputGroupSortBy {
   display: flex;

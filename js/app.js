@@ -2,7 +2,7 @@ let webstore = new Vue({
     el: '#classApp',
     data:{
         title: 'After School Adventures',
-        lessons: lessons,
+        lessons: [],
         cart:[],
         showLessons: true,
         selectedSort: '',
@@ -32,6 +32,14 @@ let webstore = new Vue({
         }
     },
     methods:{
+        async fetchLessons() {
+            try {
+                const response = await fetch(`http://localhost:3000/collections/lesson`);
+                this.lessons = await response.json();
+            } catch (error) {
+                console.error("Error fetching lessons:", error);
+            }
+        },
         addItemToCart(lesson)
         {
             this.cart.push(lesson.id);
@@ -83,25 +91,29 @@ let webstore = new Vue({
             });
             return spaces;
         },
-        sortedLessons() {
-            let sortedLessons = [...this.lessons];  // Clone the lessons array to avoid mutating the original
+        // sortedLessons() {
+        //     let sortedLessons = [...this.lessons];  // Clone the lessons array to avoid mutating the original
 
-            if (this.selectedSort === 'price') {
-                sortedLessons = sortedLessons.sort((a, b) => a.price - b.price);
-            } else if (this.selectedSort === 'subject') {
-                sortedLessons = sortedLessons.sort((a, b) => a.subject.localeCompare(b.subject));
-            } else if (this.selectedSort === 'location') {
-                sortedLessons = sortedLessons.sort((a, b) => a.location.localeCompare(b.location));
-            } else if (this.selectedSort === 'spaces') {
-                sortedLessons = sortedLessons.sort((a, b) => this.availableSpaces[a.id] - this.availableSpaces[b.id]);
-            }
+        //     if (this.selectedSort === 'price') {
+        //         sortedLessons = sortedLessons.sort((a, b) => a.price - b.price);
+        //     } else if (this.selectedSort === 'subject') {
+        //         sortedLessons = sortedLessons.sort((a, b) => a.subject.localeCompare(b.subject));
+        //     } else if (this.selectedSort === 'location') {
+        //         sortedLessons = sortedLessons.sort((a, b) => a.location.localeCompare(b.location));
+        //     } else if (this.selectedSort === 'spaces') {
+        //         sortedLessons = sortedLessons.sort((a, b) => this.availableSpaces[a.id] - this.availableSpaces[b.id]);
+        //     }
 
-            // Sort in ascending or descending order based on the radio button
-            if (this.sortOrder === 'desc') {
-                sortedLessons.reverse();
-            }
+        //     // Sort in ascending or descending order based on the radio button
+        //     if (this.sortOrder === 'desc') {
+        //         sortedLessons.reverse();
+        //     }
 
-            return sortedLessons;
-        }
+        //     return sortedLessons;
+        // }
+    },
+    mounted() {
+        // Fetch data when the Vue component is mounted
+        this.fetchLessons();
     }
 })
