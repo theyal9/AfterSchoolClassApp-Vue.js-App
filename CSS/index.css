@@ -76,16 +76,6 @@ header .title {
 	text-align: center;
 }
 
-/* .cart-btn:hover {
-	width: 150px;
-	border-radius: 5px;
-}
-
-.cart-btn:hover span {
-	padding: 2px;
-	width: max-content;
-} */
-
 #cart img {
 	width: 24px;
 	height: 24px;
@@ -371,11 +361,8 @@ header .title {
 .sorting {
   display: flex;
   font-size: 20px;
-  /* margin-right: 5px; */
   margin-left: -50px;
   font-family: 'Nanum Pen Script', cursive;
-  /* margin-bottom: 50px; */
-  /* justify-content: space-between;  */
 }
 
 .radioButtonSort label {

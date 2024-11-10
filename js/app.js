@@ -6,6 +6,10 @@ let webstore = new Vue({
         cart: [],
         cartCount: 0,
         showLessons: true,
+        selectedLessons: [], // Store selected lessons for checkout
+        showCart: true,
+        showCheckoutDetails: false,
+        showSelectedLessons: false, // Toggle between pages
         selectedSort: 'subject',
         sortOrder: 'asc',
         order: {
@@ -118,6 +122,37 @@ let webstore = new Vue({
             //     console.error('Error in addToCart:', error);
             // }
         },
+        async removeItemFromCart(lesson) {
+            // PUT request to update spaces
+            try {
+                const spaceChange = 1;
+
+                const updateResponse = await fetch(`http://localhost:3000/lesson/${lesson.id}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        spaces: spaceChange
+                    }),
+                });
+
+                if (updateResponse.ok) {
+                    const updatedLesson = await updateResponse.json();
+                    console.log('Lesson spaces updated successfully:', updatedLesson);
+                    // Remove the lesson from the cart
+                    const index = this.cart.findIndex(item => item.id === lesson.id);
+                    if (index !== -1) {
+                        this.cart.splice(index, 1); // Remove 1 item at the found index
+                    }
+                    // this.fetchCartLessons();
+                } else {
+                    console.error('Error updating lesson spaces:', updateResponse.statusText);
+                }
+            } catch (error) {
+                console.error('Error in updating spaces:', error);
+            } 
+        },
         showCheckout()
         {
             if (this.showLessons)
@@ -161,6 +196,23 @@ let webstore = new Vue({
                 return 0;  // Return 0 if there's an error or invalid response
             }
         },
+        toggleSelectedView() {
+            if (this.showCart) {
+                // Go back to the selection page
+                this.showCart = false;
+            } else {
+                // Proceed to the checkout page with selected items only
+                this.showCart = true;
+            }
+        },
+        toggleShowCheckoutDetails() {
+            if (this.showCart) {
+                // Go back to the selection page
+                this.showCheckoutDetails = false;
+            } else {
+                this.showCheckoutDetails = true;
+            }
+        }
     },
     computed:{
         // itemInCart() {
