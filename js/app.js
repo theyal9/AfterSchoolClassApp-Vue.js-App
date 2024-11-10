@@ -4,7 +4,7 @@ let webstore = new Vue({
         title: 'After School Adventures',
         lessons: [],
         showLessons: true,
-        selectedSort: '',
+        selectedSort: 'subject',
         sortOrder: 'asc',
         order: {
             firstName: '',
@@ -33,16 +33,12 @@ let webstore = new Vue({
     methods:{
         async fetchLessons() {
             try {
-                const response = await fetch(`http://localhost:3000/lesson`);
+                const response = await fetch(`http://localhost:3000/lesson/20/${this.selectedSort}/${this.sortOrder}`);
                 this.lessons = await response.json();
             } catch (error) {
                 console.error("Error fetching lessons:", error);
             }
         },
-        // addItemToCart(lesson)
-        // {
-        //     this.cart.push(lesson.id);
-        // },
         async addItemToCart(lesson) {
             try {
                 const order = {
@@ -111,7 +107,7 @@ let webstore = new Vue({
         {
             try {
                 // Use query parameters to send the id
-                const response = await fetch(`http://localhost:3000/order/count?id=${id}`);
+                const response = await fetch(`http://localhost:3000/order/count/${id}`);
                 
                 // Ensure response is valid
                 if (!response.ok) {
@@ -121,85 +117,37 @@ let webstore = new Vue({
                 // Parse the JSON response
                 const data = await response.json();
         
-                // Check if data is valid and has the 'count' property
-                if (data && typeof data.count !== 'undefined') {
-                    // Ensure the count is an integer
-                    const count = parseInt(data.count, 10);
+                // Check if data is valid and has the 'quantity' property
+                if (data && typeof data.quantity !== 'undefined') {
+                    // Ensure the quantity is an integer
+                    const quantity = parseInt(data.quantity, 10);
         
-                    // Return the integer count or 0 if it's NaN
-                    return Number.isNaN(count) ? 0 : count;
+                    // Return the integer quantity or 0 if it's NaN
+                    return Number.isNaN(quantity) ? 0 : quantity;
                 } else {
                     return 0;
                 }
             } catch (error) {
-                console.error("Error fetching order count:", error);
+                // console.error("Error fetching order quantity:", error);
                 return 0;  // Return 0 if there's an error or invalid response
             }
-
-            // let count = 0;
-            // for (let i = 0; i < this.cart.length; i++) 
-            // {
-            //     if (this.cart[i] === id)
-            //     {
-            //         count++;
-            //     }
-            // }
-            // return count;
         },
-        async canAddToCart(lesson)
-        {   
-            console.log(lesson.spaces);
-            const count = await this.cartCount(lesson.id);  // Ensure you await the result here
-            console.log(count); 
-            // console.log(this.cartCount(lesson.id));
-            console.log(lesson.spaces > count);
-            return lesson.spaces > count;
-        },
-        // availableSpace(lesson)
-        // {
-        //     return lesson.spaces - this.cartCount(lesson.id);
-        // }
     },
     computed:{
-        // itemInCart:function()
-        // {
-        //     // return this.cart.length > 0 ? "(" + this.cart.length + ")" : "";
-        //     return this.cartCount();
-        // },
-        itemInCart()
-        {
-            const count = this.cartCount;
-            console.log(count); 
+        async itemInCart() {
+            const count = await this.cartCount();  // Await the asynchronous cartCount function
+            console.log("Cart orders amounted to:", count); 
+            // return count > 0 ? `(${count})` : "";
             return count > 0 ? "(" + count + ")" : "";
         },
-        // availableSpaces() {
-        //     // Return an object where the keys are lesson ids and the values are available spaces
-        //     let spaces = {};
-        //     this.lessons.forEach(lesson => {
-        //         spaces[lesson.id] = lesson.spaces - this.cartCount(lesson.id);
-        //     });
-        //     return spaces;
-        // },
-        // sortedLessons() {
-        //     let sortedLessons = [...this.lessons];  // Clone the lessons array to avoid mutating the original
-
-        //     if (this.selectedSort === 'price') {
-        //         sortedLessons = sortedLessons.sort((a, b) => a.price - b.price);
-        //     } else if (this.selectedSort === 'subject') {
-        //         sortedLessons = sortedLessons.sort((a, b) => a.subject.localeCompare(b.subject));
-        //     } else if (this.selectedSort === 'location') {
-        //         sortedLessons = sortedLessons.sort((a, b) => a.location.localeCompare(b.location));
-        //     } else if (this.selectedSort === 'spaces') {
-        //         sortedLessons = sortedLessons.sort((a, b) => this.availableSpaces[a.id] - this.availableSpaces[b.id]);
-        //     }
-
-        //     // Sort in ascending or descending order based on the radio button
-        //     if (this.sortOrder === 'desc') {
-        //         sortedLessons.reverse();
-        //     }
-
-        //     return sortedLessons;
-        // }
+    },
+    watch: {
+        selectedSort() {
+            this.fetchLessons();
+        },
+        sortOrder() {
+            this.fetchLessons();
+        }
     },
     mounted() {
         // Fetch data when the Vue component is mounted

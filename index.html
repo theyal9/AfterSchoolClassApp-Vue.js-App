@@ -7,7 +7,6 @@
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lexend+Deca|Dancing+Script|Nanum+Pen+Script">
     <link rel="stylesheet" href="CSS/index.css">
     <script src="https://unpkg.com/vue@2.7.8/dist/vue.js"></script>
-    <!-- <script src="lessons.js"></script> -->
     <title>After School Class App</title>
 </head>
 <body>
@@ -76,72 +75,24 @@
                         <p>Price: Rs {{lesson.price}}</p>
 
                         <button 
-                            :disabled="!canAddToCart(lesson)" 
-                            :class="{ 'disabledButton': !canAddToCart(lesson) }" 
-                            v-on:click="addItemToCart(lesson)">
-                            Add to Cart
-                        </button>
-
-                        <span v-if="lesson.spaces == 0">All seats are taken!</span>
-                        <span v-else-if="lesson.spaces < 5">
-                            Only {{lesson.spaces}} left!
-                        </span>
-                        <span v-else>Buy now!</span>
-
-                        <!-- <button 
-                            :disabled="lesson.spaces === cartCount(lesson.id)" 
-                            :class="{ 'no-space': lesson.spaces === cartCount(lesson.id) }"
+                            :disabled="lesson.spaces === 0" 
+                            :class="{ 'disabledButton': lesson.spaces === 0 }"
                             v-on:click="addItemToCart(lesson)"
                         >
                             Add to Cart
                         </button>
                     
-                        <span v-if="lesson.spaces === cartCount(lesson.id)">All seats are taken!</span>
-                        <span v-else-if="lesson.spaces - cartCount(lesson.id) < 5">
-                            Only {{ lesson.spaces - cartCount(lesson.id) }} left!
-                        </span>
-                        <span v-else>Buy now!</span> -->
-
-                        <!-- <button v-if="canAddToCart(lesson)" v-on:click="addItemToCart(lesson)">Add to Cart</button>
-                        <span v-if='lesson.spaces === cartCount(lesson.id)'>All seats are taken!</span>
-                        <span v-else-if="lesson.spaces - cartCount(lesson.id) < 5">
-                            Only {{lesson.spaces - cartCount(lesson.id)}} left!
+                        <span v-if="lesson.spaces === 0">All seats are taken!</span>
+                        <span v-else-if="lesson.spaces < 5">
+                            Only {{ lesson.spaces }} left!
                         </span>
                         <span v-else>Buy now!</span>
-                        
-                        <div v-else>
-                            <button class="disabledButton">Add to Cart</button>
-                        </div> -->
 
                         <div>
                             <span v-for='n in lesson.rating'>★</span>
                             <span v-for='n in 5 - lesson.rating'>☆</span>
                         </div>
                     </div>
-                    
-                    <!-- <div v-for="lesson in sortedLessons" :key="lesson.id" class="displayLessons">
-                        <figure>
-                            <img v-bind:src="lesson.image" :alt="lesson.subject + ' Image'">
-                        </figure>
-                        <h2 v-text="lesson.subject"></h2>
-                        <p v-text="lesson.location"></p>
-                        <p>Price: Rs {{lesson.price}}</p>
-
-                        <button v-if="canAddToCart(lesson)" v-on:click="addItemToCart(lesson)">Add to Cart</button>
-                        <span v-if='lesson.spaces === cartCount(lesson.id)'>All seats are taken!</span>
-                        <span v-else-if="lesson.spaces - cartCount(lesson.id) < 5">
-                            Only {{lesson.spaces - cartCount(lesson.id)}} left!
-                        </span>
-                        <span v-else>Buy now!</span>
-                        
-                        <div v-else>
-                            <button disabled>Add to Cart</button>
-                        </div>
-                        <div>
-                            <span v-for='n in lesson.rating'>★</span>
-                            <span v-for='n in 5 - lesson.rating'>☆</span>
-                        </div>
-                    </div> -->
                 </div>  
             </div>
             <div v-else class="checkoutContainer">
