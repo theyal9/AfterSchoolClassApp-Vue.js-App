@@ -37,6 +37,80 @@ header .title {
   margin: 0;
 }
 
+.cartButton {
+  background-color: #ffffff00;
+  display: flex;
+  transition: 0.3s ease-in-out;
+  position: absolute;
+  right: 20px;
+  margin-top: 15px;
+  font-size: 0.8rem;
+  border: none;
+  cursor: pointer;
+  align-items: center;
+  padding: 0;
+  box-sizing: border-box;
+  font-size: 20px;
+}
+
+.cart-btn {
+	cursor: pointer;
+	height: 50px;
+	width: 50px;
+	font-family: 'Titillium Web', sans-serif;
+	color: #333;
+	border-radius: 10px;
+	box-shadow: 0px 10px 10px rgba(0,0,0,0.1);
+	background: white;
+	margin: 5px;
+	transition: 1s;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.cart-btn span {
+	width: 0px;
+	overflow: hidden;
+	transition: 1s;
+	text-align: center;
+}
+
+/* .cart-btn:hover {
+	width: 150px;
+	border-radius: 5px;
+}
+
+.cart-btn:hover span {
+	padding: 2px;
+	width: max-content;
+} */
+
+#cart img {
+	width: 24px;
+	height: 24px;
+	margin-right: 8px;
+}
+
+.cartButton:disabled,
+.disabledCartButton {
+  cursor: not-allowed;
+  opacity: 0.6; 
+}
+
+/* Apply hover styles only if the button is not disabled */
+.cartButton:not(:disabled)
+.cart-btn:hover {
+	width: 150px;
+	border-radius: 5px;
+}
+
+.cartButton:not(:disabled)
+.cart-btn:hover span {
+	padding: 2px;
+	width: max-content;
+}
+
 /* Checkout button on the top-right corner */
 .checkoutButton {
   background-color: #ffffff;
