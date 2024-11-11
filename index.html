@@ -22,42 +22,17 @@
                 class="cartButton"
                 :disabled="itemInCart === ''"
                 :class="{ 'disabledCartButton': itemInCart === '' }"
-                v-on:click="showCheckout">
+                v-on:click="showCartItems">
                 <div class='cart'>
                     <div class='cart-btn flex-center' id="cart">
                         <img src="https://cdn-icons-png.flaticon.com/128/3916/3916598.png" width="24" height="24" alt="Cart Icon">
-                        <!-- <span class="new">{{numOfItemsInCart}}</span> -->
                         <span class="new">{{itemInCart}}</span>
                     </div>
                 </div>
             </button>
-            <button v-else v-on:click="showCheckout" class="checkoutButton">
+            <button v-else v-on:click="showCartItems" class="cartLessonButton">
                 <div class="backButton">Back to Home</div>
             </button>
-
-            <!-- <button v-if="showLessons" v-on:click="showCheckout" class="checkoutButton">
-                Checkout
-                <div class="left-side">
-                    <div class="card">
-                      <div class="card-line"></div>
-                      <div class="buttons"></div>
-                    </div>
-                    <div class="post">
-                      <div class="post-line"></div>
-                      <div class="screen">
-                        <div class="dollar">$</div>
-                      </div>
-                      <div class="numbers"></div>
-                      <div class="numbers-line2"></div>
-                    </div>
-                </div>
-                <div class="right-side">
-                    <div class="new">Checkout {{itemInCart}}</div>
-                </div>
-            </button>
-            <button v-else v-on:click="showCheckout" class="checkoutButton">
-                <div class="backButton">Back to Home</div>
-            </button> -->
         </header>
 
         <main class="lessonContainer">
@@ -93,16 +68,16 @@
                         <p>Price: Rs {{lesson.price}}</p>
 
                         <button 
-                            :disabled="lesson.spaces === 0" 
-                            :class="{ 'disabledButton': lesson.spaces === 0 }"
+                            :disabled="lesson.spaces - lessonCartCount(lesson.id) === 0" 
+                            :class="{ 'disabledButton': lesson.spaces - lessonCartCount(lesson.id) === 0 }"
                             v-on:click="addItemToCart(lesson)"
                         >
                             Add to Cart
                         </button>
                     
-                        <span v-if="lesson.spaces === 0">All seats are taken!</span>
-                        <span v-else-if="lesson.spaces < 5">
-                            Only {{ lesson.spaces }} left!
+                        <span v-if="lesson.spaces === lessonCartCount(lesson.id)">All seats are taken!</span>
+                        <span v-else-if="lesson.spaces - lessonCartCount(lesson.id) < 5">
+                            Only {{lesson.spaces - lessonCartCount(lesson.id)}} left!
                         </span>
                         <span v-else>Buy now!</span>
 
@@ -218,8 +193,7 @@
                         </p>
                     </div>
 
-                    <button v-on:click="toggleShowCheckoutDetails" class="checkoutButton">
-                        <!-- Checkout -->
+                    <button v-if="showCheckoutDetails" v-on:click="toggleShowCheckoutDetails" class="checkoutButton">
                         <div class="left-side">
                             <div class="card">
                               <div class="card-line"></div>
@@ -234,9 +208,15 @@
                               <div class="numbers-line2"></div>
                             </div>
                         </div>
-                        <div class="right-side">
+                        <!-- <div class="right-side">
                             <div class="new">{{ showCheckoutDetails ? 'Back' : 'Checkout' }}</div>
+                        </div> -->
+                        <div class="right-side">
+                            <div class="new">Checkout {{selectedItemsInCart}}</div>
                         </div>
+                    </button>
+                    <button v-else v-on:click="toggleShowCheckoutDetails" class="checkoutButton">
+                        <div class="backButton">Back</div>
                     </button>
                 </div>
                 <div v-if="showCheckoutDetails" class="items-in-cart">
@@ -254,61 +234,6 @@
                         
                     <button v-on:click="submitForm">Place Order</button>
                 </div>
-                <!-- <div class="checkout-details">
-                    <div class="inputGroup">
-                        <strong>First Name:</strong>
-                        <input v-model.trim="order.firstName"/>
-                    </div>
-                
-                    <div class="inputGroup">
-                        <strong>Last Name:</strong>
-                        <input v-model.trim="order.lastName"/>
-                    </div>
-                
-                    <div class="inputGroup">
-                        <strong>Address:</strong>
-                        <input v-model.trim="order.address"/>
-                    </div>
-
-                    <div class="inputGroup">
-                        <strong>Phone Number:</strong>
-                        <input v-model.trim="order.phoneNumber"/>
-                    </div>
-                
-                    <div class="inputGroup">
-                        <strong>City:</strong>
-                        <input v-model.trim="order.city"/>
-                    </div>
-                          
-                    <div class="inputGroup">
-                        <strong>State:</strong>
-                        <select v-model="order.state">
-                            <option disabled value="">State</option>
-                            <option v-for="(state, key) in states"
-                            v-bind:value="state">
-                            {{key}}
-                            </option>
-                        </select>
-                    </div>
-    
-                    <div class="inputGroup">
-                        <strong>Zip:</strong>
-                        <input v-model.number="order.zip" type="number"/>
-                    </div>
-    
-                    <p><input type="checkbox" id="gift" value="true"
-                        v-model="order.gift"
-                        v-bind:true-value="order.sendGift"
-                        v-bind:false-value="order.dontSendGift">
-                        <label for="gift">Ship As Gift?</label>
-                    </p>
-
-                    <p><input type="radio" id="home" value="Home" v-model="order.method">
-                        <label for="home">Home</label>
-                        <input type="radio" id="business" value="Business" v-model="order.method">
-                        <label for="business">Business</label>
-                    </p>
-                </div> -->
             </div>            
         </main>
     </div>

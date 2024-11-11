@@ -44,7 +44,6 @@ header .title {
   position: absolute;
   right: 20px;
   margin-top: 15px;
-  font-size: 0.8rem;
   border: none;
   cursor: pointer;
   align-items: center;
@@ -102,7 +101,8 @@ header .title {
 }
 
 /* Checkout button on the top-right corner */
-.checkoutButton {
+.checkoutButton,
+.cartLessonButton {
   background-color: #ffffff;
   display: flex;
   width: 200px;
@@ -111,8 +111,7 @@ header .title {
   transition: 0.3s ease-in-out;
   position: absolute;
   right: 20px;
-  margin-top: 15px;
-  font-size: 0.8rem;
+  margin-top: -100px;
   border: none;
   cursor: pointer;
   box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
@@ -122,7 +121,12 @@ header .title {
   font-size: 20px;
 }
 
-.checkoutButton:hover {
+.cartLessonButton {
+  margin-top: 15px;
+}
+
+.checkoutButton:hover,
+.cartLessonButton:hover {
   transform: scale(1.03);
 }
 
@@ -161,7 +165,6 @@ header .title {
 
 .checkoutButton:hover .right-side {
   background-color: #f9f7f9;
-
   left: -50px;
 }
 
@@ -234,7 +237,8 @@ header .title {
   transform: scale(0.5);
 }
 
-.checkoutButton {
+.checkoutButton,
+.cartLessonButton {
   transform: scale(0.8);
 }
 
@@ -508,4 +512,30 @@ header .title {
   font-size: 20px;
   margin-top: 20px;
   color: #666;
+}
+
+.nextBackButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s linear;
+  border-radius: 10px;
+  border: 1px solid #F2BED1;
+  padding: 10px 20px;
+  position: absolute;
+  right: 20px;
+  margin-top: 15px;
+  border: none;
+  font-size: 20px;
+}
+
+.nextBackButton:hover {
+  font-size: 1.2em;
+  transform: translateX(6px);
+}
+
+.nextBackButton:hover {
+  box-shadow: 10px 10px 40px #d1d1d1;
+  transform: translateY(-5px);
 }
