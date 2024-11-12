@@ -6,16 +6,15 @@ let webstore = new Vue({
         cart: [],
         cartCount: 0,
         showLessons: true,
-        selectedLessons: [], // Store selected lessons for checkout
-        showCart: true,
         showCheckoutDetails: false,
-        // showSelectedLessons: false, 
         selectedSort: 'subject',
         sortOrder: 'asc',
+        isFormValid: false,
         order: {
             firstName: '',
             lastName: '',
             address: '',
+            phoneNumber: '',
             city: '',
             zip: '',
             state: '',
@@ -46,148 +45,23 @@ let webstore = new Vue({
             }
         },
         lessonCartCount(id) {
-            // let count = 0;
-            // for (let i = 0; i < this.cart.length; i++) 
-            // {
-            //     if (this.cart[i] === id)
-            //     {
-            //         count++;
-            //     }
-            // }
-            // return count;
-            return this.cart.filter(lesson => lesson.id === id).length;
+            let count = 0;
+            for (let i = 0; i < this.cart.length; i++) {
+                if (this.cart[i].id === id) {
+                    count++;
+                }
+            }
+            return count;
         },
         addItemToCart(lesson) {
-            this.cart.push(lesson);
-            // for (let i = 0; i < this.lessons.length; i++) 
-            // {
-            //     if (this.lessons[i] === lesson)
-            //     {
-            //         lesson.spaces = lesson.spaces - 1;
-            //     }
-            // }
-
-            // // PUT request to update spaces
-            // try {
-            //     const spaceChange = -1;
-
-            //     const updateResponse = await fetch(`http://localhost:3000/lesson/${lesson.id}`, {
-            //         method: 'PUT',
-            //         headers: {
-            //             'Content-Type': 'application/json',
-            //         },
-            //         body: JSON.stringify({
-            //             spaces: spaceChange
-            //         }),
-            //     });
-
-            //     if (updateResponse.ok) {
-            //         const updatedLesson = await updateResponse.json();
-            //         console.log('Lesson spaces updated successfully:', updatedLesson);
-            //         this.cart.push(lesson);
-            //         this.fetchLessons();
-            //     } else {
-            //         console.error('Error updating lesson spaces:', updateResponse.statusText);
-            //     }
-            // } catch (error) {
-            //     console.error('Error in updating spaces:', error);
-            // } 
-
-
-            // try {
-            //     const order = {
-            //         lessonID: lesson.id,
-            //         quantity: 1
-            //         // dateAdded: new Date()
-            //     };
-      
-            //     // Send POST request to backend API
-            //     const response = await fetch('http://localhost:3000/addOrder', {
-            //         method: 'POST',
-            //         headers: {
-            //             'Content-Type': 'application/json',
-            //         },
-            //         body: JSON.stringify(order),
-            //     });
-      
-            //     if (response.ok) {
-            //         const result = await response.json();
-            //         console.log('Order added successfully:', result);
-            //         // PUT request to update spaces if order was successful
-            //         try {
-            //             const spaceChange = -1;
-
-            //             const updateResponse = await fetch(`http://localhost:3000/lesson/${lesson.id}`, {
-            //                 method: 'PUT',
-            //                 headers: {
-            //                     'Content-Type': 'application/json',
-            //                 },
-            //                 body: JSON.stringify({
-            //                     spaces: spaceChange
-            //                 }),
-            //             });
-
-            //             if (updateResponse.ok) {
-            //                 const updatedLesson = await updateResponse.json();
-            //                 console.log('Lesson spaces updated successfully:', updatedLesson);
-            //                 this.fetchLessons();
-            //                 // this.numOfItemsInCart = this.itemInCart();
-            //             } else {
-            //                 console.error('Error updating lesson spaces:', updateResponse.statusText);
-            //             }
-            //         } catch (error) {
-            //             console.error('Error in updating spaces:', error);
-            //         } 
-            //     } else {
-            //         console.error('Error adding order:', response.statusText);
-            //     }
-            // } catch (error) {
-            //     console.error('Error in addToCart:', error);
-            // }
+            const lessonWithId = { ...lesson, uniqueId: lesson.id + '-' + (lesson.spaces - this.lessonCartCount(lesson.id)) };
+            this.cart.push(lessonWithId);
         },
         removeItemFromCart(lesson) {
             const index = this.cart.findIndex(item => item.id === lesson.id);
             if (index !== -1) {
-                this.cart.splice(index, 1); // Remove 1 item at the found index
+                this.cart.splice(index, 1); 
             }
-
-            // for (let i = 0; i < this.lessons.length; i++) 
-            // {
-            //     if (this.lessons[i] === lesson)
-            //     {
-            //         lesson.spaces = lesson.spaces + 1;
-            //     }
-            // }
-
-            // // PUT request to update spaces
-            // try {
-            //     const spaceChange = 1;
-
-            //     const updateResponse = await fetch(`http://localhost:3000/lesson/${lesson.id}`, {
-            //         method: 'PUT',
-            //         headers: {
-            //             'Content-Type': 'application/json',
-            //         },
-            //         body: JSON.stringify({
-            //             spaces: spaceChange
-            //         }),
-            //     });
-
-            //     if (updateResponse.ok) {
-            //         const updatedLesson = await updateResponse.json();
-            //         console.log('Lesson spaces updated successfully:', updatedLesson);
-            //         // Remove the lesson from the cart
-            //         const index = this.cart.findIndex(item => item.id === lesson.id);
-            //         if (index !== -1) {
-            //             this.cart.splice(index, 1); // Remove 1 item at the found index
-            //         }
-            //         // this.fetchCartLessons();
-            //     } else {
-            //         console.error('Error updating lesson spaces:', updateResponse.statusText);
-            //     }
-            // } catch (error) {
-            //     console.error('Error in updating spaces:', error);
-            // } 
         },
         showCartItems()
         {
@@ -198,75 +72,92 @@ let webstore = new Vue({
                 this.showLessons = true;
             }
         },
-        submitForm() 
-        {
-            this.showCheckoutDetails = true;
-            alert('Order submitted!')
+        // Validation function for Name (letters only) and Phone (numbers only)
+        validateForm() {
+            const nameRegex = /^[A-Za-z\s]+$/;
+            const phoneRegex = /^[0-9]+$/;
+
+            // Validate the Name and Phone fields
+            this.isFormValid = nameRegex.test(this.order.firstName) && 
+                                nameRegex.test(this.order.lastName) &&
+                               phoneRegex.test(this.order.phoneNumber);
         },
-        // getCartCount() 
-        // {
-        //     return this.cart.length > 0 ? "(" + this.cart.length + ")" : "";
-        // },
-        // async getCartCount(id)
-        // {
-        //     try {
-        //         // Use query parameters to send the id
-        //         const response = await fetch(`http://localhost:3000/order/count/${id}`);
-                
-        //         // Ensure response is valid
-        //         if (!response.ok) {
-        //             throw new Error('Failed to fetch data');
-        //         }
-        
-        //         // Parse the JSON response
-        //         const data = await response.json();
-        
-        //         // Check if data is valid and has the 'quantity' property
-        //         if (data && typeof data.quantity !== 'undefined') {
-        //             // // Ensure the quantity is an integer
-        //             // const quantity = parseInt(data.quantity, 10);
-        
-        //             // // Return the integer quantity or 0 if it's NaN
-        //             // return Number.isNaN(quantity) ? 0 : quantity;
-        //             this.cartCount = data.quantity || 0;
-        //         } else {
-        //             return 0;
-        //         }
-        //     } catch (error) {
-        //         // console.error("Error fetching order quantity:", error);
-        //         return 0;  // Return 0 if there's an error or invalid response
-        //     }
-        // },
-        toggleSelectedView() {
-            if (this.showCart) {
-                // Go back to the selection page
-                this.showCart = false;
-            } else {
-                // Proceed to the checkout page with selected items only
-                this.showCart = true;
+        async submitOrder() {
+            if (this.isFormValid) {
+                const orderSuccess = await this.placeOrder();
+                if (orderSuccess) {
+                    this.showCheckoutDetails = !this.showCheckoutDetails;
+                    alert("Order has been submitted!");
+                    this.resetOrderForm();
+                    this.showLessons = true;
+                } else {
+                    alert("There was an issue submitting your order. Please try again.");
+                }
             }
+            console.log(this.showCheckoutDetails);
         },
-        toggleShowCheckoutDetails() {
-            if (this.showCart) {
-                // Go back to the selection page
-                this.showCheckoutDetails = false;
-            } else {
-                this.showCheckoutDetails = true;
+        async placeOrder() {
+            let orderSuccessful = true;
+        
+            // Copy of the cart to iterate over while modifying original cart
+            const cartCopy = [...this.cart];
+        
+            for (let i = 0; i < cartCopy.length; i++) {
+                const lesson = cartCopy[i];
+                try {
+                    const spaceChange = -1;
+        
+                    const updateResponse = await fetch(`http://localhost:3000/lesson/${lesson.id}`, {
+                        method: 'PUT',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            spaces: spaceChange
+                        }),
+                    });
+        
+                    if (updateResponse.ok) {
+                        const updatedLesson = await updateResponse.json();
+                        console.log('Lesson spaces updated successfully:', updatedLesson);
+                        
+                        // Remove the lesson from the original cart
+                        const index = this.cart.findIndex(item => item.id === lesson.id);
+                        if (index !== -1) {
+                            this.cart.splice(index, 1);
+                        }
+                    } else {
+                        console.error('Error updating lesson spaces:', updateResponse.statusText);
+                        orderSuccessful = false;
+                    }
+                } catch (error) {
+                    console.error('Error in updating spaces:', error);
+                    orderSuccessful = false;
+                } 
             }
+            this.fetchLessons();
+            return orderSuccessful;
+        },        
+        
+        resetOrderForm() {
+            // Reset the order object fields after submitting the order
+            this.order = {
+                firstName: '',
+                lastName: '',
+                address: '',
+                city: '',
+                zip: '',
+                state: '',
+                method: 'Home',
+                sendGift: 'Send as a gift',
+                dontSendGift: 'Do not send as a gift',
+                phoneNumber: ''
+            };
         }
     },
     computed:{
-        // itemInCart() {
-        //     const count = this.getCartCount();  // Await the asynchronous cartCount function
-        //     console.log("Cart orders amounted to:", count); 
-        //     // return count > 0 ? `(${count})` : "";
-        //     return count > 0 ? "(" + count + ")" : "";
-        // }
         itemInCart() {
             return this.cart.length > 0 ? "(" + this.cart.length + ")" : "";
-        },
-        selectedItemsInCart() {
-            return this.cart.length > 0 ? "(" + this.selectedLessons.length + ")" : "";
         }
     },
     watch: {
@@ -275,12 +166,14 @@ let webstore = new Vue({
         },
         sortOrder() {
             this.fetchLessons();
-        }
+        },
+
+        // Watch the Name and Phone fields to validate form in real-time
+        'order.firstName': 'validateForm',
+        'order.phoneNumber': 'validateForm'
     },
     mounted() {
         // Fetch data when the Vue component is mounted
         this.fetchLessons();
-        // this.getCartCount();
-        // this.numOfItemsInCart = this.itemInCart(); 
     }
 })

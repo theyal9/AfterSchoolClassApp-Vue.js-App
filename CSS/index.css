@@ -444,6 +444,10 @@ header .title {
   cursor: not-allowed;   /* Change cursor to indicate it's disabled */
 }
 
+.disabledButton {
+  cursor: not-allowed;   /* Change cursor to indicate it's disabled */
+}
+
 /* Style for the container holding each label and input field */
 .inputGroup, .inputGroupSortBy {
   display: flex;
@@ -505,37 +509,12 @@ header .title {
 .checkout-details {
   width: 600px;
   padding: 20px;
+  margin-top: 10px;
 }
 
 .checkoutContainer .order-info {
-  font-family: 'Nanum Pen Script', cursive;
+  /* font-family: 'Nanum Pen Script', cursive; */
   font-size: 20px;
   margin-top: 20px;
   color: #666;
-}
-
-.nextBackButton {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  transition: all 0.3s linear;
-  border-radius: 10px;
-  border: 1px solid #F2BED1;
-  padding: 10px 20px;
-  position: absolute;
-  right: 20px;
-  margin-top: 15px;
-  border: none;
-  font-size: 20px;
-}
-
-.nextBackButton:hover {
-  font-size: 1.2em;
-  transform: translateX(6px);
-}
-
-.nextBackButton:hover {
-  box-shadow: 10px 10px 40px #d1d1d1;
-  transform: translateY(-5px);
 }

@@ -37,7 +37,6 @@
 
         <main class="lessonContainer">
             <div v-if="showLessons" class="showLessons">
-
                 <div class="sorting">
                     <div class="inputGroupSortBy">
                         <strong>Sort By:</strong>
@@ -88,42 +87,11 @@
                     </div>
                 </div>  
             </div>
-
             <div v-else class="checkoutContainer">
-                <h1>Checkout Page: Select Items in Cart > Enter your details and Verify Purchase > Checkout</h1>
-
-                <!-- Next/Back button -->
-                <button v-on:click="toggleSelectedView" class="nextBackButton">
-                    {{ showCart ? 'Next' : 'Back' }}
-                </button>
-                
-                <div v-if="showCart" class="items-in-cart">
-                    <!-- Display lesson details -->
-                    <div  class="lessons">
-                        <div v-for="lesson in cart" :key="lesson.id" class="displayLessons">
-                            <input type="checkbox" :value="lesson" v-model="selectedLessons">
-                            <figure>
-                                <img v-bind:src="lesson.image" :alt="lesson.subject + ' Image'">
-                            </figure>
-                            <h2 v-text="lesson.subject"></h2>
-                            <p v-text="lesson.location"></p>
-                            <p>Price: Rs {{lesson.price}}</p>
-    
-                            <button v-on:click="removeItemFromCart(lesson)">
-                                Remove from Cart
-                            </button>
-    
-                            <div>
-                                <span v-for='n in lesson.rating'>★</span>
-                                <span v-for='n in 5 - lesson.rating'>☆</span>
-                            </div>
-                        </div>
-                    </div> 
-                </div>
-                <div v-else class="checkoutDetails">
-                    <h2>Selected Items for Checkout</h2>
-                    <div class="selected-items">
-                        <div v-for="lesson in selectedLessons" :key="lesson.id" class="displayLessons">
+                <h1>Checkout Page: Enter your details and Verify Purchase > Checkout</h1>
+                <div class="checkoutDetails">
+                    <div class="lessons">
+                        <div v-for="lesson in cart" :key="lesson.uniqueId" class="displayLessons">
                             <figure>
                                 <img v-bind:src="lesson.image" :alt="lesson.subject + ' Image'">
                             </figure>
@@ -192,47 +160,29 @@
                             <label for="business">Business</label>
                         </p>
                     </div>
-
-                    <button v-if="showCheckoutDetails" v-on:click="toggleShowCheckoutDetails" class="checkoutButton">
+                    <button 
+                        v-on:click="submitOrder"
+                        :disabled="!isFormValid"
+                        :class="{ 'disabledButton': !isFormValid }"
+                        class="checkoutButton">
                         <div class="left-side">
                             <div class="card">
-                              <div class="card-line"></div>
-                              <div class="buttons"></div>
+                            <div class="card-line"></div>
+                            <div class="buttons"></div>
                             </div>
                             <div class="post">
-                              <div class="post-line"></div>
-                              <div class="screen">
+                            <div class="post-line"></div>
+                            <div class="screen">
                                 <div class="dollar">$</div>
-                              </div>
-                              <div class="numbers"></div>
-                              <div class="numbers-line2"></div>
+                            </div>
+                            <div class="numbers"></div>
+                            <div class="numbers-line2"></div>
                             </div>
                         </div>
-                        <!-- <div class="right-side">
-                            <div class="new">{{ showCheckoutDetails ? 'Back' : 'Checkout' }}</div>
-                        </div> -->
                         <div class="right-side">
-                            <div class="new">Checkout {{selectedItemsInCart}}</div>
+                            <div class="new">Checkout {{itemInCart}}</div>
                         </div>
                     </button>
-                    <button v-else v-on:click="toggleShowCheckoutDetails" class="checkoutButton">
-                        <div class="backButton">Back</div>
-                    </button>
-                </div>
-                <div v-if="showCheckoutDetails" class="items-in-cart">
-                    <h2>Order Information</h2>
-                    <p class="order-info">First Name: {{order.firstName}}</p>
-                    <p class="order-info">Last Name: {{order.lastName}}</p>
-                    <p class="order-info">Address: {{order.address}}</p>
-                    <p class="order-info">Phone Number: {{order.phoneNumber}}</p>
-                    <p class="order-info">City: {{order.city}}</p>
-                    <p class="order-info">Zip: {{order.zip}}</p>
-                    <p class="order-info">State: {{order.state}}</p>
-                    <p class="order-info">Gift? {{order.gift}}</p>
-                    <p class="order-info">Method: {{order.method}}</p>
-                    <p class="order-info">Total Price: </p>
-                        
-                    <button v-on:click="submitForm">Place Order</button>
                 </div>
             </div>            
         </main>
