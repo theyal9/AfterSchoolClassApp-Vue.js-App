@@ -4,7 +4,6 @@ let webstore = new Vue({
         title: 'After School Adventures',
         lessons: [],
         cart: [],
-        cartCount: 0,
         showLessons: true,
         showCheckoutDetails: false,
         selectedSort: 'subject',
@@ -56,7 +55,7 @@ let webstore = new Vue({
         addItemToCart(lesson) {
             const lessonWithId = { ...lesson, uniqueId: lesson.id + '-' + (lesson.spaces - this.lessonCartCount(lesson.id)) };
             this.cart.push(lessonWithId);
-        },
+        },        
         removeItemFromCart(lesson) {
             const index = this.cart.findIndex(item => item.id === lesson.id);
             if (index !== -1) {
@@ -95,50 +94,106 @@ let webstore = new Vue({
                 }
             }
             console.log(this.showCheckoutDetails);
-        },
-        async placeOrder() {
-            let orderSuccessful = true;
-        
-            // Copy of the cart to iterate over while modifying original cart
-            const cartCopy = [...this.cart];
-        
-            for (let i = 0; i < cartCopy.length; i++) {
-                const lesson = cartCopy[i];
+        },         
+
+        async placeOrder() 
+        {       
+            let orderSuccessfull = true;
+            let lessonsOrdered = [];
+            let lessonsOrderedData = [];
+            
+            for (let i = 0; i < this.cart.length; i++) {
+                const lesson = this.cart[i];
+            
+                // Check if the lesson is already in the lessonsOrdered array
+                let lessonFound = false;
+                for (let j = 0; j < lessonsOrdered.length; j++) {
+                    if (lessonsOrdered[j].id === lesson.id) {
+                        // If found, increase the quantity by count
+                        lessonsOrdered[j].quantity += 1;
+                        lessonsOrderedData[j].quantity += 1;
+                        lessonFound = true;
+                        break; // Exit loop once found
+                    }
+                }
+            
+                // If lesson wasn't found, add it to the array
+                if (!lessonFound) {
+                    lessonsOrdered.push({
+                        id: lesson.id,
+                        spaces: lesson.spaces,
+                        quantity: 1
+                    });
+                    lessonsOrderedData.push({
+                        id: lesson.id,
+                        quantity: 1
+                    });
+                }
+            }
+
+            for (let i = 0; i < lessonsOrdered.length; i++) {
+                const lesson = lessonsOrdered[i];
                 try {
-                    const spaceChange = -1;
-        
                     const updateResponse = await fetch(`http://localhost:3000/lesson/${lesson.id}`, {
                         method: 'PUT',
                         headers: {
                             'Content-Type': 'application/json',
                         },
                         body: JSON.stringify({
-                            spaces: spaceChange
+                            spaces: lesson.spaces - this.lessonCartCount(lesson.id)
                         }),
                     });
         
                     if (updateResponse.ok) {
                         const updatedLesson = await updateResponse.json();
                         console.log('Lesson spaces updated successfully:', updatedLesson);
-                        
-                        // Remove the lesson from the original cart
-                        const index = this.cart.findIndex(item => item.id === lesson.id);
-                        if (index !== -1) {
-                            this.cart.splice(index, 1);
-                        }
                     } else {
                         console.error('Error updating lesson spaces:', updateResponse.statusText);
-                        orderSuccessful = false;
+                        return false;
                     }
                 } catch (error) {
                     console.error('Error in updating spaces:', error);
-                    orderSuccessful = false;
-                } 
+                    return false;
+                }
             }
-            this.fetchLessons();
-            return orderSuccessful;
-        },        
+            
+            const orderData = {
+                firstName: this.order.firstName,
+                lastName: this.order.lastName,
+                address: this.order.address,
+                city: this.order.city,
+                zip: this.order.zip,
+                state: this.order.state,
+                phoneNumber: this.order.phoneNumber,
+                method: this.order.method,
+                sendGift: this.order.sendGift,
+                lessonIDs: lessonsOrderedData
+            };
         
+            try {
+                console.log(lessonsOrderedData);
+                // Send the order data to the backend via a POST request
+                const response = await fetch('http://localhost:3000/addOrder', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',  // Specify content type as JSON
+                    },
+                    body: JSON.stringify(orderData)  // Convert the order data to JSON
+                });
+        
+                if (response.ok) {
+                    const data = await response.json();
+                } else {
+                    console.error('Error submitting order:', response.statusText);
+                    return false;
+                }
+            } catch (error) {
+                console.error('Error sending order:', error);
+                return false;
+            }
+            this.cart=[];
+            return orderSuccessfull;
+        },   
         resetOrderForm() {
             // Reset the order object fields after submitting the order
             this.order = {

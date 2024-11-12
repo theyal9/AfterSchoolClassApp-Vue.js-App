@@ -98,6 +98,11 @@
                             <h2 v-text="lesson.subject"></h2>
                             <p v-text="lesson.location"></p>
                             <p>Price: Rs {{lesson.price}}</p>
+
+                            <button v-on:click="removeItemFromCart(lesson)">
+                                Remove from Cart
+                            </button>
+                            
                             <div>
                                 <span v-for='n in lesson.rating'>★</span>
                                 <span v-for='n in 5 - lesson.rating'>☆</span>
