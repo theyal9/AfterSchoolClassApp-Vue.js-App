@@ -13,9 +13,18 @@
     <div id="classApp">
         <header>
             <h1 class="title">{{title}}</h1>
-            <h1>Home</h1>
-            <h1>How To Buy</h1>
-            <h1>Login/Register</h1>
+
+            <div class="searchContainer">
+                <img src="https://cdn3.iconfinder.com/data/icons/linecons-free-vector-icons-pack/32/search-64.png" width="24" height="24" alt="Search Icon">
+                <input
+                  id="query"
+                  class="input"
+                  type="search"
+                  v-model="searchQuery"
+                  placeholder="Search lessons by title, location, or price..."
+                  name="searchbar"
+                />
+            </div>
             
             <button 
                 v-if="showLessons" 
@@ -34,7 +43,7 @@
                 <div class="backButton">Back to Home</div>
             </button>
         </header>
-
+        
         <main class="lessonContainer">
             <div v-if="showLessons" class="showLessons">
                 <div class="sorting">
@@ -57,7 +66,41 @@
                     </div>
                 </div>
 
-                <div  class="lessons">
+                <div v-if="isSearching && searchResults.length === 0">
+                    No results found for "{{ searchQuery }}".
+                </div>
+                <!-- Display search results or default lesson list -->
+                <div v-if="isSearching && searchResults.length > 0" class="lessons">
+                    <div v-for="lesson in searchResults" :key="lesson.id" class="displayLessons">
+                        <figure>
+                            <img v-bind:src="lesson.image" :alt="lesson.subject + ' Image'">
+                        </figure>
+                        <h2 v-text="lesson.subject"></h2>
+                        <p v-text="lesson.location"></p>
+                        <p>Price: Rs {{lesson.price}}</p>
+
+                        <button 
+                            :disabled="lesson.spaces - lessonCartCount(lesson.id) === 0" 
+                            :class="{ 'disabledButton': lesson.spaces - lessonCartCount(lesson.id) === 0 }"
+                            v-on:click="addItemToCart(lesson)"
+                        >
+                            Add to Cart
+                        </button>
+                    
+                        <span v-if="lesson.spaces === lessonCartCount(lesson.id)">All seats are taken!</span>
+                        <span v-else-if="lesson.spaces - lessonCartCount(lesson.id) < 5">
+                            Only {{lesson.spaces - lessonCartCount(lesson.id)}} left!
+                        </span>
+                        <span v-else>Buy now!</span>
+
+                        <div>
+                            <span v-for='n in lesson.rating'>★</span>
+                            <span v-for='n in 5 - lesson.rating'>☆</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div v-else class="lessons">
                     <div v-for="lesson in lessons" :key="lesson.id" class="displayLessons">
                         <figure>
                             <img v-bind:src="lesson.image" :alt="lesson.subject + ' Image'">

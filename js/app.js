@@ -9,6 +9,9 @@ let webstore = new Vue({
         selectedSort: 'subject',
         sortOrder: 'asc',
         isFormValid: false,
+        searchQuery: '', 
+        searchResults: [], // Store the search results here
+        isSearching: false, // Indicate whether search results are being displayed    
         order: {
             firstName: '',
             lastName: '',
@@ -77,18 +80,15 @@ let webstore = new Vue({
             const nameRegex = /^[A-Za-z\s]+$/;
             const phoneRegex = /^[0-9]+$/;
 
-            console.log(this.order.firstName, this.order.lastName, this.order.phoneNumber, 
-                        this.order.address, this.order.city, this.order.zip, this.order.state, 
-                        this.order.method);
-            // Validate the Name and Phone fields
+            // Validate fields
             this.isFormValid = nameRegex.test(this.order.firstName) && 
                                nameRegex.test(this.order.lastName) &&
-                               phoneRegex.test(this.order.phoneNumber);
-
-            if (!this.order.address || !this.order.city || !this.order.zip || !this.order.state ||
-                !this.order.method) {
-                    this.isFormValid = false;
-            }
+                               phoneRegex.test(this.order.phoneNumber) &&
+                               this.order.address.trim() &&
+                               this.order.city.trim() &&
+                               this.order.zip.trim() &&
+                               this.order.state.trim() &&
+                               this.order.method.trim();
         },
         async submitOrder() {
             if (this.isFormValid) {
@@ -218,6 +218,23 @@ let webstore = new Vue({
                 dontSendGift: 'Do not send as a gift',
                 phoneNumber: ''
             };
+        },
+
+        async performSearch() {
+            if (this.searchQuery.trim() === '') {
+                this.isSearching = false;
+                this.searchResults = [];
+                this.fetchLessons();
+                return;
+            }
+    
+            try {
+                const response = await fetch(`http://localhost:3000/search/${encodeURIComponent(this.searchQuery)}`);
+                this.searchResults = await response.json();
+                this.isSearching = true;
+            } catch (error) {
+                console.error("Error performing search:", error);
+            }
         }
     },
     computed:{
@@ -236,7 +253,8 @@ let webstore = new Vue({
         {
             this.fetchLessons();
         },
-
+        // searchQuery: 'searchLessons',
+        searchQuery: 'performSearch',
         // Watch the Name and Phone fields to validate form in real-time
         'order.firstName': 'validateForm',
         'order.phoneNumber': 'validateForm',
