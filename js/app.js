@@ -70,16 +70,25 @@ let webstore = new Vue({
             } else {
                 this.showLessons = true;
             }
+            this.fetchLessons();
         },
         // Validation function for Name (letters only) and Phone (numbers only)
         validateForm() {
             const nameRegex = /^[A-Za-z\s]+$/;
             const phoneRegex = /^[0-9]+$/;
 
+            console.log(this.order.firstName, this.order.lastName, this.order.phoneNumber, 
+                        this.order.address, this.order.city, this.order.zip, this.order.state, 
+                        this.order.method);
             // Validate the Name and Phone fields
             this.isFormValid = nameRegex.test(this.order.firstName) && 
-                                nameRegex.test(this.order.lastName) &&
+                               nameRegex.test(this.order.lastName) &&
                                phoneRegex.test(this.order.phoneNumber);
+
+            if (!this.order.address || !this.order.city || !this.order.zip || !this.order.state ||
+                !this.order.method) {
+                    this.isFormValid = false;
+            }
         },
         async submitOrder() {
             if (this.isFormValid) {
@@ -130,33 +139,7 @@ let webstore = new Vue({
                     });
                 }
             }
-
-            for (let i = 0; i < lessonsOrdered.length; i++) {
-                const lesson = lessonsOrdered[i];
-                try {
-                    const updateResponse = await fetch(`http://localhost:3000/lesson/${lesson.id}`, {
-                        method: 'PUT',
-                        headers: {
-                            'Content-Type': 'application/json',
-                        },
-                        body: JSON.stringify({
-                            spaces: lesson.spaces - this.lessonCartCount(lesson.id)
-                        }),
-                    });
-        
-                    if (updateResponse.ok) {
-                        const updatedLesson = await updateResponse.json();
-                        console.log('Lesson spaces updated successfully:', updatedLesson);
-                    } else {
-                        console.error('Error updating lesson spaces:', updateResponse.statusText);
-                        return false;
-                    }
-                } catch (error) {
-                    console.error('Error in updating spaces:', error);
-                    return false;
-                }
-            }
-            
+         
             const orderData = {
                 firstName: this.order.firstName,
                 lastName: this.order.lastName,
@@ -183,6 +166,33 @@ let webstore = new Vue({
         
                 if (response.ok) {
                     const data = await response.json();
+
+                    for (let i = 0; i < lessonsOrdered.length; i++) {
+                        const lesson = lessonsOrdered[i];
+                        try {
+                            const updateResponse = await fetch(`http://localhost:3000/lesson/${lesson.id}`, {
+                                method: 'PUT',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                },
+                                body: JSON.stringify({
+                                    spaces: lesson.spaces - this.lessonCartCount(lesson.id)
+                                }),
+                            });
+                
+                            if (updateResponse.ok) {
+                                const updatedLesson = await updateResponse.json();
+                                console.log('Lesson spaces updated successfully:', updatedLesson);
+                            } else {
+                                console.error('Error updating lesson spaces:', updateResponse.statusText);
+                                return false;
+                            }
+                        } catch (error) {
+                            console.error('Error in updating spaces:', error);
+                            return false;
+                        }
+                    }
+
                 } else {
                     console.error('Error submitting order:', response.statusText);
                     return false;
@@ -222,10 +232,20 @@ let webstore = new Vue({
         sortOrder() {
             this.fetchLessons();
         },
+        showLessons()
+        {
+            this.fetchLessons();
+        },
 
         // Watch the Name and Phone fields to validate form in real-time
         'order.firstName': 'validateForm',
-        'order.phoneNumber': 'validateForm'
+        'order.phoneNumber': 'validateForm',
+        'order.address': 'validateForm',
+        'order.phoneNumber': 'validateForm',
+        'order.city': 'validateForm',
+        'order.zip': 'validateForm',
+        'order.state': 'validateForm',
+        'order.method': 'validateForm'
     },
     mounted() {
         // Fetch data when the Vue component is mounted
