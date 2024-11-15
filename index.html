@@ -1,190 +1,203 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width,initial-scale=1.0">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"></link>
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lexend+Deca|Dancing+Script|Nanum+Pen+Script">
+    <!-- Character encoding for the document -->
+    <meta charset="UTF-8"> 
+    <!-- Responsive design settings -->
+    <meta name="viewport" content="width=device-width,initial-scale=1.0"> 
+    <!-- Link to Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+    <!-- Link to Google Fonts -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lexend+Deca&family=Dancing+Script&family=Nanum+Pen+Script&display=swap">
+    <!-- Link to custom CSS stylesheet -->
     <link rel="stylesheet" href="CSS/index.css">
+    <!-- Link to Vue.js library -->
     <script src="https://unpkg.com/vue@2.7.8/dist/vue.js"></script>
-    <title>After School Class App</title>
+    <!-- Title of the web page -->
+    <title>After School Class App</title> 
 </head>
 <body>
-    <div id="classApp">
+    <div id="classApp"> <!-- Main Vue.js application container -->
         <header>
-            <h1 class="title">{{title}}</h1>
+            <h1 class="title">{{title}}</h1> <!-- Display the title of the app using Vue's data binding -->
 
-            <div class="searchContainer">
-                <img src="https://cdn3.iconfinder.com/data/icons/linecons-free-vector-icons-pack/32/search-64.png" width="24" height="24" alt="Search Icon">
+            <div class="searchContainer"> <!-- Container for the search bar -->
+                <img src="https://cdn3.iconfinder.com/data/icons/linecons-free-vector-icons-pack/32/search-64.png" width="24" height="24" alt="Search Icon"> <!-- Search icon -->
                 <input
                   id="query"
                   class="input"
                   type="search"
-                  v-model="searchQuery"
+                  v-model="searchQuery" 
                   placeholder="Search lessons by title, location, or price..."
                   name="searchbar"
                 />
             </div>
             
+            <!-- Button to show cart if lessons are displayed -->
+            <!-- Disable button if the cart is empty -->
             <button 
                 v-if="showLessons" 
                 class="cartButton"
-                :disabled="itemInCart === ''"
-                :class="{ 'disabledCartButton': itemInCart === '' }"
-                v-on:click="showCartItems">
-                <div class='cart'>
-                    <div class='cart-btn flex-center' id="cart">
-                        <img src="https://cdn-icons-png.flaticon.com/128/3916/3916598.png" width="24" height="24" alt="Cart Icon">
-                        <span class="new">{{itemInCart}}</span>
-                    </div>
-                </div>
+                :disabled="itemInCart === ''" 
+                :class="{ 'disabledCartButton': itemInCart === '' }" 
+                v-on:click="showCartItems"> <!-- Click event to show cart items -->
+                <span class="cart">
+                    <span class="cart-btn flex-center" id="cart">
+                        <img src="https://cdn-icons-png.flaticon.com/128/3916/3916598.png" width="24" height="24" alt="Cart Icon"> <!-- Cart icon -->
+                        <span class="new">{{itemInCart}}</span> <!-- Display number of items in the cart -->
+                    </span>
+                </span>
             </button>
-            <button v-else v-on:click="showCartItems" class="cartLessonButton">
-                <div class="backButton">Back to Home</div>
+            <button v-else v-on:click="showCartItems" class="cartLessonButton"> <!-- Button to go back to lessons if cart is displayed -->
+                <span class="backButton">Back to Home</span>
             </button>
         </header>
-        
-        <main class="lessonContainer">
-            <div v-if="showLessons" class="showLessons">
-                <div class="sorting">
+
+        <!-- Main content area for lessons and checkout -->
+        <main class="lessonContainer"> 
+            <div v-if="showLessons" class="showLessons"> <!-- Conditional rendering for lessons display -->
+                <div class="sorting"> <!-- Sorting options for lessons -->
                     <div class="inputGroupSortBy">
                         <strong>Sort By:</strong>
-                        <select v-model="selectedSort">
+                        <select v-model="selectedSort"> <!-- Dropdown for sorting options -->
                             <option disabled value="">sortBy</option>
-                            <option v-for="(state, key) in sortBy" v-bind:value="state">
+                            <option v-for="(state, key) in sortBy" v-bind:value="state"> <!-- Loop through sort options -->
                                 {{key}}
                             </option>
                         </select>
                     </div>
-                    <div class="radioButtonSort">
+                    <!-- Radio buttons for sorting order -->
+                    <div class="radioButtonSort"> 
                         <label>
-                            <input type="radio" value="asc" v-model="sortOrder"> Asc (↑)
+                            <input type="radio" value="asc" v-model="sortOrder"> Asc (↑) <!-- Ascending order -->
                         </label>
                         <label>
-                            <input type="radio" value="desc" v-model="sortOrder"> Desc (↓)
+                            <input type="radio" value="desc" v-model="sortOrder"> Desc (↓) <!-- Descending order -->
                         </label>
                     </div>
                 </div>
 
-                <div v-if="isSearching && searchResults.length === 0">
+                <div v-if="isSearching && searchResults.length === 0"> <!-- Message when no results found -->
                     No results found for "{{ searchQuery }}".
                 </div>
+
                 <!-- Display search results or default lesson list -->
-                <div v-if="isSearching && searchResults.length > 0" class="lessons">
-                    <div v-for="lesson in searchResults" :key="lesson.id" class="displayLessons">
-                        <figure>
-                            <img v-bind:src="lesson.image" :alt="lesson.subject + ' Image'">
-                        </figure>
-                        <h2 v-text="lesson.subject"></h2>
-                        <p v-text="lesson.location"></p>
-                        <p>Price: Rs {{lesson.price}}</p>
-
-                        <button 
-                            :disabled="lesson.spaces - lessonCartCount(lesson.id) === 0" 
-                            :class="{ 'disabledButton': lesson.spaces - lessonCartCount(lesson.id) === 0 }"
-                            v-on:click="addItemToCart(lesson)"
-                        >
-                            Add to Cart
-                        </button>
-                    
-                        <span v-if="lesson.spaces === lessonCartCount(lesson.id)">All seats are taken!</span>
-                        <span v-else-if="lesson.spaces - lessonCartCount(lesson.id) < 5">
-                            Only {{lesson.spaces - lessonCartCount(lesson.id)}} left!
-                        </span>
-                        <span v-else>Buy now!</span>
-
-                        <div>
-                            <span v-for='n in lesson.rating'>★</span>
-                            <span v-for='n in 5 - lesson.rating'>☆</span>
+                <div v-if="isSearching && searchResults.length > 0"> 
+                    <h2>Search Results</h2>
+                    <div class="lessons">
+                        <div v-for="lesson in searchResults" :key="lesson.id" class="displayLessons"> <!-- Loop through search results -->
+                            <figure>
+                                <img v-bind:src="lesson.image" :alt="lesson.subject + ' Image'"> <!-- Lesson image -->
+                            </figure>
+                            <h2 v-text=" lesson.subject"></h2> <!-- Lesson subject -->
+                            <p v-text="lesson.location"></p> <!-- Lesson location -->
+                            <p>Price: Rs {{lesson.price}}</p> <!-- Lesson price -->
+                            
+                            <!-- Disable button if no spaces available -->
+                            <button 
+                                :disabled="lesson.spaces - lessonCartCount(lesson.id) === 0"  
+                                :class="{ 'disabledButton': lesson.spaces - lessonCartCount(lesson.id) === 0 }" 
+                                v-on:click="addItemToCart(lesson)"> 
+                                Add to Cart
+                            </button>
+                        
+                            <span v-if="lesson.spaces === lessonCartCount(lesson.id)">All seats are taken!</span> <!-- Message when all seats are taken -->
+                            <span v-else-if="lesson.spaces - lessonCartCount(lesson.id) < 5"> <!-- Message for limited availability -->
+                                Only {{lesson.spaces - lessonCartCount(lesson.id)}} left!
+                            </span>
+                            <span v-else>Buy now!</span> <!-- Message for available lessons -->
+    
+                            <div>
+                                <span v-for='n in lesson.rating'>★</span> <!-- Display filled stars for rating -->
+                                <span v-for='n in 5 - lesson.rating'>☆</span> <!-- Display empty stars for rating -->
+                            </div>
                         </div>
                     </div>
                 </div>
 
-                <div v-else class="lessons">
-                    <div v-for="lesson in lessons" :key="lesson.id" class="displayLessons">
+                <div v-else class="lessons"> <!-- Default lesson list when not searching -->
+                    <div v-for="lesson in lessons" :key="lesson.id" class="displayLessons"> <!-- Loop through lessons -->
                         <figure>
-                            <img v-bind:src="lesson.image" :alt="lesson.subject + ' Image'">
+                            <img v-bind:src="lesson.image" :alt="lesson.subject + ' Image'"> <!-- Lesson image -->
                         </figure>
-                        <h2 v-text="lesson.subject"></h2>
-                        <p v-text="lesson.location"></p>
-                        <p>Price: Rs {{lesson.price}}</p>
+                        <h2 v-text="lesson.subject"></h2> <!-- Lesson subject -->
+                        <p v-text="lesson.location"></p> <!-- Lesson location -->
+                        <p>Price: Rs {{lesson.price}}</p> <!-- Lesson price -->
 
                         <button 
-                            :disabled="lesson.spaces - lessonCartCount(lesson.id) === 0" 
-                            :class="{ 'disabledButton': lesson.spaces - lessonCartCount(lesson.id) === 0 }"
-                            v-on:click="addItemToCart(lesson)"
-                        >
+                            :disabled="lesson.spaces - lessonCartCount(lesson.id) === 0"  
+                            :class="{ 'disabledButton': lesson.spaces - lessonCartCount(lesson.id) === 0 }" 
+                            v-on:click="addItemToCart(lesson)"> 
                             Add to Cart
                         </button>
                     
-                        <span v-if="lesson.spaces === lessonCartCount(lesson.id)">All seats are taken!</span>
-                        <span v-else-if="lesson.spaces - lessonCartCount(lesson.id) < 5">
+                        <span v-if="lesson.spaces === lessonCartCount(lesson.id)">All seats are taken!</span> <!-- Message when all seats are taken -->
+                        <span v-else-if="lesson.spaces - lessonCartCount(lesson.id) < 5"> <!-- Message for limited availability -->
                             Only {{lesson.spaces - lessonCartCount(lesson.id)}} left!
                         </span>
-                        <span v-else>Buy now!</span>
+                        <span v-else>Buy now!</span> <!-- Message for available lessons -->
 
                         <div>
-                            <span v-for='n in lesson.rating'>★</span>
-                            <span v-for='n in 5 - lesson.rating'>☆</span>
+                            <span v-for='n in lesson.rating'>★</span> <!-- Display filled stars for rating -->
+                            <span v-for='n in 5 - lesson.rating'>☆</span> <!-- Display empty stars for rating -->
                         </div>
                     </div>
                 </div>  
             </div>
-            <div v-else class="checkoutContainer">
-                <h1>Checkout Page: Enter your details and Verify Purchase > Checkout</h1>
+            <div v-else class="checkoutContainer"> <!-- Checkout section when cart is displayed -->
+                <h1>Checkout Page: Enter your details and Verify Purchase > Checkout</h1> <!-- Checkout title -->
                 <div class="checkoutDetails">
                     <div class="lessons">
-                        <div v-for="lesson in cart" :key="lesson.uniqueId" class="displayLessons">
+                        <div v-for="lesson in cart" :key="lesson.uniqueId" class="displayLessons"> <!-- Loop through cart items -->
                             <figure>
-                                <img v-bind:src="lesson.image" :alt="lesson.subject + ' Image'">
+                                <img v-bind:src="lesson.image" :alt="lesson.subject + ' Image'"> <!-- Lesson image -->
                             </figure>
-                            <h2 v-text="lesson.subject"></h2>
-                            <p v-text="lesson.location"></p>
-                            <p>Price: Rs {{lesson.price}}</p>
+                            <h2 v-text="lesson.subject"></h2> <!-- Lesson subject -->
+                            <p v-text="lesson.location"></p> <!-- Lesson location -->
+                            <p>Price: Rs {{lesson.price}}</p> <!-- Lesson price -->
 
-                            <button v-on:click="removeItemFromCart(lesson)">
+                            <button v-on:click="removeItemFromCart(lesson)"> <!-- Click event to remove item from cart -->
                                 Remove from Cart
                             </button>
                             
                             <div>
-                                <span v-for='n in lesson.rating'>★</span>
-                                <span v-for='n in 5 - lesson.rating'>☆</span>
+                                <span v-for='n in lesson.rating'>★</span> <!-- Display filled stars for rating -->
+                                <span v-for='n in 5 - lesson.rating'>☆</span> <!-- Display empty stars for rating -->
                             </div>
                         </div>
                     </div>
 
-                    <div class="checkout-details">
+                    <div class="checkout-details"> <!-- Checkout form details -->
                         <div class="inputGroup">
                             <strong>First Name:</strong>
-                            <input v-model.trim="order.firstName"/>
+                            <input v-model.trim="order.firstName"/> <!-- Input field for first name with two-way binding -->
                         </div>
                     
                         <div class="inputGroup">
                             <strong>Last Name:</strong>
-                            <input v-model.trim="order.lastName"/>
+                            <input v-model.trim="order.lastName"/> <!-- Input field for last name -->
                         </div>
                     
                         <div class="inputGroup">
                             <strong>Address:</strong>
-                            <input v-model.trim="order.address"/>
+                            <input v-model.trim="order.address"/> <!-- Input field for address -->
                         </div>
     
                         <div class="inputGroup">
                             <strong>Phone Number:</strong>
-                            <input v-model.trim="order.phoneNumber"/>
+                            <input v-model.trim="order.phoneNumber"/> <!-- Input field for phone number -->
                         </div>
                     
                         <div class="inputGroup">
                             <strong>City:</strong>
-                            <input v-model.trim="order.city"/>
+                            <input v-model.trim="order.city"/> <!-- Input field for city -->
                         </div>
                               
                         <div class="inputGroup">
                             <strong>State:</strong>
-                            <select v-model="order.state">
+                            <select v-model="order.state"> <!-- Dropdown for selecting state -->
                                 <option disabled value="">State</option>
-                                <option v-for="(state, key) in states"
-                                v-bind:value="state">
+                                <option v-for="(state, key) in states" v-bind:value="state"> <!-- Loop through states -->
                                 {{key}}
                                 </option>
                             </select>
@@ -192,26 +205,29 @@
         
                         <div class="inputGroup">
                             <strong>Zip:</strong>
-                            <input v-model.number="order.zip" type="number"/>
+                            <input v-model.number="order.zip" type="number"/> <!-- Input field for zip code -->
                         </div>
-        
+                        
+                        <!-- Checkbox for gift option -->
                         <p><input type="checkbox" id="gift" value="true"
-                            v-model="order.gift"
+                            v-model="order.gift" 
                             v-bind:true-value="order.sendGift"
                             v-bind:false-value="order.dontSendGift">
                             <label for="gift">Ship As Gift?</label>
                         </p>
     
-                        <p><input type="radio" id="home" value="Home" v-model="order.method">
+                        <p><input type="radio" id="home" value="Home" v-model="order.method"> <!-- Radio button for shipping method -->
                             <label for="home">Home</label>
-                            <input type="radio" id="business" value="Business" v-model="order.method">
+                            <input type="radio" id="business" value="Business" v-model="order.method"> <!-- Radio button for business shipping method -->
                             <label for="business">Business</label>
                         </p>
                     </div>
+
+                    <!-- Click event to submit the order -->
                     <button 
-                        v-on:click="submitOrder"
-                        :disabled="!isFormValid"
-                        :class="{ 'disabledButton': !isFormValid }"
+                        v-on:click="submitOrder" 
+                        :disabled="!isFormValid" 
+                        :class="{ 'disabledButton': !isFormValid }" 
                         class="checkoutButton">
                         <div class="left-side">
                             <div class="card">
@@ -221,20 +237,20 @@
                             <div class="post">
                             <div class="post-line"></div>
                             <div class="screen">
-                                <div class="dollar">$</div>
+                                <div class="dollar">$</div> <!-- Dollar sign for checkout -->
                             </div>
                             <div class="numbers"></div>
                             <div class="numbers-line2"></div>
                             </div>
                         </div>
                         <div class="right-side">
-                            <div class="new">Checkout {{itemInCart}}</div>
+                            <div class="new">Checkout {{itemInCart}}</div> <!-- Display number of items in the cart -->
                         </div>
                     </button>
                 </div>
             </div>            
         </main>
     </div>
-<script src="js/app.js"></script>
+<script src="js/app.js"></script> <!-- Link to the main JavaScript file -->
 </body>
 </html>
