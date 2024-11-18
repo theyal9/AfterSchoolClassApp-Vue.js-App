@@ -41,7 +41,7 @@ let webstore = new Vue({
         // Fetch lessons from the server based on selected sorting criteria
         async fetchLessons() {
             try {
-                const response = await fetch(`http://localhost:3000/lesson/20/${this.selectedSort}/${this.sortOrder}`);
+                const response = await fetch(`https://afterschoolclassapp-express-js-app.onrender.com/lesson/20/${this.selectedSort}/${this.sortOrder}`);
                 this.lessons = await response.json(); // Store fetched lessons in the lessons array
             } catch (error) {
                 console.error("Error fetching lessons:", error); // Log any errors that occur
@@ -157,7 +157,7 @@ let webstore = new Vue({
             try {
                 console.log(lessonsOrderedData); // Log the ordered lesson data
                 // Send the order data to the backend via a POST request
-                const response = await fetch('http://localhost:3000/addOrder', {
+                const response = await fetch('https://afterschoolclassapp-express-js-app.onrender.com/addOrder', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',  // Specify content type as JSON
@@ -171,7 +171,7 @@ let webstore = new Vue({
                     for (let i = 0; i < lessonsOrdered.length; i++) {
                         const lesson = lessonsOrdered[i];
                         try {
-                            const updateResponse = await fetch(`http://localhost:3000/lesson/${lesson.id}`, {
+                            const updateResponse = await fetch(`https://afterschoolclassapp-express-js-app.onrender.com/lesson/${lesson.id}`, {
                                 method: 'PUT',
                                 headers: {
                                     'Content-Type': 'application/json',
@@ -230,7 +230,7 @@ let webstore = new Vue({
             }
     
             try {
-                const response = await fetch(`http://localhost:3000/search/${encodeURIComponent(this.searchQuery)}`); // Fetch search results from the server
+                const response = await fetch(`https://afterschoolclassapp-express-js-app.onrender.com/search/${encodeURIComponent(this.searchQuery)}`); // Fetch search results from the server
                 this.searchResults = await response.json(); // Store search results
                 this.isSearching = true; // Set searching state to true
             } catch (error) {
